@@ -3,7 +3,7 @@ import socket, time, ssl, os
 # Informations
 NETWORK = 'irc.freenode.net'
 NICK = 'SimpleBot'
-CHAN = 'archlinux-cn-offtopic'
+CHAN = 'linuxba'
 PORT = 6697
 PASSWD = 'Aa32504863'
 
@@ -49,7 +49,7 @@ while True:
 
     # Commands
         elif data.find('update_log') != -1:
-            irc.send('PRIVMSG #%s :%s: 2.0 - Time Update!\r\n' % (CHAN, user))
+            irc.send('PRIVMSG #%s :%s: 2.1 - Fortune Update!\r\n' % (CHAN, user))
 
         elif data.find('unix_timestamp') != -1:
             irc.send('PRIVMSG #%s :%s: Unix Timestamp:%s\r\n' % (CHAN, user, int(time.time())))
@@ -73,7 +73,12 @@ while True:
             irc.send('PRIVMSG #%s :(╬￣皿￣)凸 Pia! %s\r\n' % (CHAN, data[data.find('pia') + 4:len(data) - 1]))
         
         elif data.find('test') != -1:
-            irc.send('PRIVMSG #%s :%s: Tested Successfully\r\n' % (CHAN, user))
+            irc.send('PRIVMSG #%s :%s: Tested Successfully!\r\n' % (CHAN, user))
+
+        elif data.find('fortune') != -1:
+            output = os.popen('fortune').read().split('\n')
+            for i in xrange(len(output)):
+                irc.send('PRIVMSG #%s :%s\r\n' % (CHAN, output[i]))
 
     # Exit (Default: Close)
         #elif data.find('quit') != -1:
