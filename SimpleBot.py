@@ -3,7 +3,7 @@ import socket, time, ssl, os
 # Informations
 NETWORK = 'irc.freenode.net'
 NICK = 'SimpleBot'
-CHAN = 'linuxba'
+CHAN = 'archlinux-cn-offtopic'
 PORT = 6697
 PASSWD = 'Aa32504863'
 
@@ -81,15 +81,15 @@ while True:
             #exit()
 
     # Edit-allowed Functions
-    elif data.find('#%s :' % CHAN) != -1:
-        if data.find('=w=') != -1:
-            irc.send('PRIVMSG #%s :|||=w=\r\n' % CHAN)
+    #elif data.find('#%s :' % CHAN) != -1:
+        #if data.find('=w=') != -1:
+            #irc.send('PRIVMSG #%s :|||=w=\r\n' % CHAN)
 
-        elif data.find('<_<') != -1:
-            irc.send('PRIVMSG #%s :>_>\r\n' % CHAN)
+        #elif data.find('<_<') != -1:
+            #irc.send('PRIVMSG #%s :>_>\r\n' % CHAN)
 
-        elif data.find('>_>') != -1:
-            irc.send('PRIVMSG #%s :<_<\r\n' % CHAN)
+        #elif data.find('>_>') != -1:
+            #irc.send('PRIVMSG #%s :<_<\r\n' % CHAN)
 
-        elif data.find('orz') != -1 or data.find('Orz') != -1 or data.find('OTZ') != -1 or data.find('orz') != -1 or data.find('Orz') != -1 or data.find('OTZ') != -1:
-            irc.send('PRIVMSG #%s :STO\r\n' % CHAN)
+        #elif data.find('orz') != -1 or data.find('Orz') != -1 or data.find('OTZ') != -1 or data.find('orz') != -1 or data.find('Orz') != -1 or data.find('OTZ') != -1:
+            #irc.send('PRIVMSG #%s :STO\r\n' % CHAN)
