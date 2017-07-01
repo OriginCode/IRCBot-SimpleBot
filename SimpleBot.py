@@ -78,7 +78,7 @@ while True:
         elif data.find('fortune') != -1:
             output = os.popen('fortune').read().split('\n')
             for i in xrange(len(output)):
-                irc.send('PRIVMSG #%s :%s\r\n' % (CHAN, output[i]))
+                irc.send('PRIVMSG #%s :%s\n' % (CHAN, output[i]))
 
     # Exit (Default: Close)
         #elif data.find('quit') != -1:
