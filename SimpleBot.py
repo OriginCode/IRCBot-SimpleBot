@@ -3,7 +3,7 @@ import socket, time, ssl, os, types
 # Informations
 NETWORK = 'irc.freenode.net'
 NICK = 'SimpleBot'
-CHAN = 'linuxba'
+CHAN = 'liuyanbot'
 PORT = 6697
 PASSWD = 'Aa32504863'
 
@@ -55,7 +55,7 @@ while True:
         elif data.find('unix_timestamp') != -1 and length == 16:
             irc.send('PRIVMSG #%s :%s: Unix Timestamp:%s\r\n' % (CHAN, user, int(time.time())))
 
-        elif data.find('time') != -1  and length == 6 or length == 13 or length == 12:
+        elif data.find('time') != -1 and length == 6 or length == 13 or length == 12:
             if data.find('set:') == -1:
                 os.environ['TZ'] = 'Asia/Shanghai'
                 time.tzset()
@@ -85,11 +85,6 @@ while True:
 
         elif data.find('fortune') != -1  and length == 9:
             output = os.popen('fortune').read().split('\n')
-            for i in xrange(len(output)):
-                irc.send('PRIVMSG #%s :%s\n' % (CHAN, output[i].replace('\t', '    ')))
-
-        elif data.find('figlet ') != -1 and length == 9:
-            output = os.popen('figlet %s' % data[data.find('figlet') + 7:len(data) - 1]).read().split('\n')
             for i in xrange(len(output)):
                 irc.send('PRIVMSG #%s :%s\n' % (CHAN, output[i].replace('\t', '    ')))
 
