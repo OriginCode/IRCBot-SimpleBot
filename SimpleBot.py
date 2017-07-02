@@ -3,7 +3,7 @@ import socket, time, ssl, os, types
 # Informations
 NETWORK = 'irc.freenode.net'
 NICK = 'SimpleBot'
-CHAN = 'liuyanbot'
+CHAN = 'linuxba'
 PORT = 6697
 PASSWD = 'Aa32504863'
 
@@ -50,7 +50,7 @@ while True:
 
     # Commands
         elif data.find('update_log') != -1 and length == 12:
-            irc.send('PRIVMSG #%s :%s: 2.2b - Fortune Update!\r\n' % (CHAN, user))
+            irc.send('PRIVMSG #%s :%s: 2.3 - Fortune Update!\r\n' % (CHAN, user))
 
         elif data.find('unix_timestamp') != -1 and length == 16:
             irc.send('PRIVMSG #%s :%s: Unix Timestamp:%s\r\n' % (CHAN, user, int(time.time())))
