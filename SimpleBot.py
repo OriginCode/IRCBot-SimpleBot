@@ -26,18 +26,17 @@ while True:
     data = irc.recv(4096)
     print data
     user = data[data.find(':') + 1:data.find('!')]
-    length = len(data[data.find(' ::') + 3:len(data)])
 
     # Auto anti-ping
     if data.find('PING') != -1:
         irc.send('PONG ' + data.split()[1] + '\r\n')
 
     if data.find('TideBot') != -1 or data.find('labots') != -1 or data.find('anotitlebot') != -1 or data.find('MoBot') != -1 or data.find('miaowbot') != -1 or data.find('varia') != -1:
-        None
+        None    
 
     elif data.find('#%s ::' % CHAN) != -1:
     # Help manual
-        if data.find('help') != -1 and length == 6:
+        if data.find('help') != -1:
             irc.send('PRIVMSG #%s :%s: See the private chat.\r\n' % (CHAN, user))
             irc.send('PRIVMSG %s :The command of %s starts with \":\"\r\n' % (user, NICK))
             irc.send('PRIVMSG %s :----------Help of %s----------\r\n' % (user, NICK))
@@ -49,13 +48,13 @@ while True:
             irc.send('PRIVMSG %s :[pia ...]...Pia!\r\n' % user)
 
     # Commands
-        elif data.find('update_log') != -1 and length == 12:
+        elif data.find('update_log') != -1:
             irc.send('PRIVMSG #%s :%s: 2.3 - Fortune Update!\r\n' % (CHAN, user))
 
-        elif data.find('unix_timestamp') != -1 and length == 16:
+        elif data.find('unix_timestamp') != -1:
             irc.send('PRIVMSG #%s :%s: Unix Timestamp:%s\r\n' % (CHAN, user, int(time.time())))
 
-        elif data.find('time') != -1 and length == 6 or length == 13 or length == 12:
+        elif data.find('time') != -1:
             if data.find('set:') == -1:
                 os.environ['TZ'] = 'Asia/Shanghai'
                 time.tzset()
@@ -80,13 +79,13 @@ while True:
         elif data.find('pia ') != -1:
             irc.send('PRIVMSG #%s :(╬￣皿￣)凸 Pia! %s\r\n' % (CHAN, data[data.find('pia') + 4:len(data) - 1]))
         
-        elif data.find('test') != -1  and length == 6:
+        elif data.find('test') != -1:
             irc.send('PRIVMSG #%s :%s: Tested Successfully!\r\n' % (CHAN, user))
 
-        elif data.find('fortune') != -1  and length == 9:
+        elif data.find('fortune') != -1:
             output = os.popen('fortune').read().split('\n')
             for i in xrange(len(output)):
-                irc.send('PRIVMSG #%s :%s\n' % (CHAN, output[i].replace('\t', '    ')))
+                irc.send('PRIVMSG #%s :%s\r' % (CHAN, output[i].replace('\t', '    ')))
 
     # Exit (Default: Close)
         #elif data.find('quit') != -1:
