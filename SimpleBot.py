@@ -88,6 +88,11 @@ while True:
             for i in xrange(len(output)):
                 irc.send('PRIVMSG #%s :%s\n' % (CHAN, output[i].replace('\t', '    ')))
 
+        elif data.find('figlet ') != -1 and length == 9:
+            output = os.popen('figlet %s' % data[data.find('figlet') + 7:len(data) - 1]).read().split('\n')
+            for i in xrange(len(output)):
+                irc.send('PRIVMSG #%s :%s\n' % (CHAN, output[i].replace('\t', '    ')))
+
     # Exit (Default: Close)
         #elif data.find('quit') != -1:
             #irc.send('QUIT\r\n')
