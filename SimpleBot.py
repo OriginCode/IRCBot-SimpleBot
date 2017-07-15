@@ -58,7 +58,7 @@ while True:
             elif data.find('set:') == -1:
                 os.environ['TZ'] = 'Asia/Shanghai'
                 time.tzset()
-                irc.send('PRIVMSG #%s :%s: Time: %s\r\n' % (CHAN, user, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())))
+                irc.send('PRIVMSG #%s :%s: Time: %s (CST/GMT+8)\r\n' % (CHAN, user, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())))
 
             else:
                 try:
@@ -68,7 +68,7 @@ while True:
                     irc.send('PRIVMSG #%s :%s: %s\r\n' % (CHAN, user, erroutput))
                     continue
 
-                irc.send('PRIVMSG #%s :%s: Time: %s\r\n' % (CHAN, user, time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time() - 8 * 3600 + int('%s' % data[data.find('set:') + 4:len(data)]) * 3600))))
+                irc.send('PRIVMSG #%s :%s: Time: %s (CST/GMT+%s)\r\n' % (CHAN, user, time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time() - 8 * 3600 + int('%s' % data[data.find('set:') + 4:len(data)]) * 3600)), int(data[data.find('set:') + 4:len(data)])))
 
         elif data.find('me ') != -1:
             irc.send('PRIVMSG #%s :ACTION %s\r\n' % (CHAN, data[data.find('me') + 3:len(data) - 1]))
