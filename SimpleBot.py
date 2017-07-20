@@ -67,3 +67,6 @@ while True:
 
         elif re.match(r'^time\suts\r$', inc):
             irc.send('PRIVMSG #%s :%s: Unix Timestamp: %s\r' % (CHAN, user, time.time()))
+
+        else :
+            irc.send('PRIVMSG #%s :I don\'t know what you mean, %s.\r' % (CHAN, user))
