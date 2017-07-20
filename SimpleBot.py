@@ -39,10 +39,10 @@ while True:
 
         elif re.match(r'^help\r$', inc):
             irc.send('PRIVMSG #%s :%s: See the private chat.\r' % (CHAN, user))
-            irc.send('PRIVMSG %s :The command of %s starts with \":\"\r' % (user, NICK))
+            irc.send('PRIVMSG %s :The command of %s starts with \":\".\r' % (user, NICK))
             irc.send('PRIVMSG %s :----------Help of %s----------\r' % (user, NICK))
-            irc.send('PRIVMSG %s :[version]Show the version of %s\r' % (user, NICK))
-            irc.send('PRIVMSG %s :[time]Show the time. Format: :time (tz:[Number](Default: GMT+8))(uts(Show Unix Timestamp))\r\n' % user)
+            irc.send('PRIVMSG %s :[version]Show the version of %s\r.' % (user, NICK))
+            irc.send('PRIVMSG %s :[time]Show the time. Format: :time (tz:[Number](Default: GMT+8))(uts(Show Unix Timestamp)).\r\n' % user)
             irc.send('PRIVMSG %s :[fortune]Tell a fortune.\r' % (user))
 
         elif re.match(r'^version\r$', inc):
