@@ -1,7 +1,7 @@
 # Import area
 import socket, time, ssl, os, re
 
-# Informations
+# Global Information
 NETWORK = 'irc.freenode.net'
 NICK = 'SimpleBot'
 CHAN = 'liuyanbot'
@@ -52,20 +52,24 @@ while True:
             for i in xrange(len(output)):
                 irc.send('PRIVMSG #%s :%s\r' % (CHAN, output[i].replace('\t', '    ')))
 
+        # Time
+
         elif re.match(r'^time\r$', inc):
             os.environ['TZ'] = 'Asia/Shanghai'
             time.tzset()
             irc.send('PRIVMSG #%s :%s: Time: %s (CST/GMT+8)\r' % (CHAN, user, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())))
 
         elif re.match(r'^time\stz:\d{1,3}\r$', inc):
-            if int(inc[inc.find('tz:') + 3:len(inc) - 1]) <= 14 and int(inc[inc.find('tz:') + 3:len(inc) - 1]) >= -12:
+            if -12 <= int(inc[inc.find('tz:') + 3:len(inc) - 1]) <= 14:
                 irc.send('PRIVMSG #%s :%s: Time: %s (CST/GMT+%s)\r' % (CHAN, user, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time() - 8 * 3600 + int('%s' % inc[inc.find('tz:') + 3:len(inc) - 1]) * 3600)), int(inc[inc.find('tz:') + 3:len(inc) - 1])))
 
-            else :
+            else:
                 irc.send('PRIVMSG #%s :%s: Argument must be lower than 14 and higher than -12\r' % (CHAN, user))
 
         elif re.match(r'^time\suts\r$', inc):
             irc.send('PRIVMSG #%s :%s: Unix Timestamp: %s\r' % (CHAN, user, time.time()))
+
+        # Calculate
 
         elif re.match(r'^\d\sadd\s\d\r$', inc):
             irc.send('PRIVMSG #%s :%s: %s\r' % (CHAN, user, float(inc[:inc.find('add')]) + float(inc[inc.find('add') + 4:len(inc) - 1])))
