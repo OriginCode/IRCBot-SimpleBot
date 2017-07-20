@@ -1,5 +1,5 @@
 # Import area
-import socket, time, ssl, os, types
+import socket, time, ssl, os, types, re
 
 # Informations
 NETWORK = 'irc.freenode.net'
@@ -17,10 +17,13 @@ socket.connect((NETWORK, PORT))
 irc = ssl.wrap_socket(socket)
 
 # Sign into the server
-irc.send('PASS %s\r\n' % PASSWD)
-irc.send('NICK %s\r\n' % NICK)
-irc.send('USER %s %s %s :SimpleBot\r\n' % (NICK, NICK, NICK))
-irc.send('JOIN #%s\r\n' % CHAN)
+irc.send('PASS %s\r' % PASSWD)
+irc.send('NICK %s\r' % NICK)
+irc.send('USER %s %s %s :SimpleBot\r' % (NICK, NICK, NICK))
+irc.send('JOIN #%s\r' % CHAN)
+
+# Module RE Matches
+
 
 # Functions
 while True:
@@ -28,66 +31,42 @@ while True:
     print data
     user = data[data.find(':') + 1:data.find('!')]
 
-    # Auto anti-ping
     if data.find('PING') != -1:
-        irc.send('PONG ' + data.split()[1] + '\r\n')
+        irc.send('PONG ' + data.split()[1] + '\r')
 
-    if data.find('TideBot') != -1 or data.find('labots') != -1 or data.find('anotitlebot') != -1 or data.find('MoBot') != -1 or data.find('miaowbot') != -1 or data.find('varia') != -1:
-        None
+    if data.find('::') != -1:
+        inc = str(data[data.find('::') + 2:len(data) - 1])
+        print inc
+        if re.match(r'^test\r$', inc):
+            irc.send('PRIVMSG #%s :Success!\r' % CHAN)
 
-    elif data.find('#%s ::' % CHAN) != -1:
-        # Help manual
-        if data.find('help') != -1:
-            irc.send('PRIVMSG #%s :%s: See the private chat.\r\n' % (CHAN, user))
-            irc.send('PRIVMSG %s :The command of %s starts with \":\"\r\n' % (user, NICK))
-            irc.send('PRIVMSG %s :----------Help of %s----------\r\n' % (user, NICK))
-            irc.send('PRIVMSG %s :[version]Show the version of %s\r\n' % (user, NICK))
-            irc.send('PRIVMSG %s :[time]Show the time. Format: :time (set:[Number](Default: GMT+8))(ts(Show Unix Timestamp))\r\n' % user)
-            irc.send('PRIVMSG %s :[me ...]Just like /me ...\r\n' % user)
-            irc.send('PRIVMSG %s :[hug ...]Have a hug!\r\n' % user)
-            irc.send('PRIVMSG %s :[pia ...]...Pia!\r\n' % user)
+        elif re.match(r'^help\r$', inc):
+            irc.send('PRIVMSG #%s :%s: See the private chat.\r' % (CHAN, user))
+            irc.send('PRIVMSG %s :The command of %s starts with \":\"\r' % (user, NICK))
+            irc.send('PRIVMSG %s :----------Help of %s----------\r' % (user, NICK))
+            irc.send('PRIVMSG %s :[version]Show the version of %s\r' % (user, NICK))
+            irc.send('PRIVMSG %s :[time]Show the time. Format: :time (tz:[Number](Default: GMT+8))(uts(Show Unix Timestamp))\r\n' % user)
+            irc.send('PRIVMSG %s :[fortune]Tell a fortune.\r' % (user))
 
-        # Commands
-        elif data.find('version') != -1:
-            irc.send('PRIVMSG #%s :%s: 2.4\r\n' % (CHAN, user))
+        elif re.match(r'^version\r$', inc):
+            irc.send('PRIVMSG #%s :%s: 3 - Alpha\r' % (CHAN, user))
 
-        elif data.find('time') != -1:
-            if data.find('ts') != -1:
-                irc.send('PRIVMSG #%s :%s: Timestamp: %s\r\n' % (CHAN, user, time.time()))
-
-            elif data.find('set:') == -1:
-                os.environ['TZ'] = 'Asia/Shanghai'
-                time.tzset()
-                irc.send('PRIVMSG #%s :%s: Time: %s (CST/GMT+8)\r\n' % (CHAN, user, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())))
-
-            else:
-                try:
-                    int(data[data.find('set:') + 4:len(data)])
-
-                except ValueError, erroutput:
-                    irc.send('PRIVMSG #%s :%s: %s\r\n' % (CHAN, user, erroutput))
-                    continue
-
-                irc.send('PRIVMSG #%s :%s: Time: %s (CST/GMT+%s)\r\n' % (CHAN, user, time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time() - 8 * 3600 + int('%s' % data[data.find('set:') + 4:len(data)]) * 3600)), int(data[data.find('set:') + 4:len(data)])))
-
-        elif data.find('me ') != -1:
-            irc.send('PRIVMSG #%s :ACTION %s\r\n' % (CHAN, data[data.find('me') + 3:len(data) - 1]))
-
-        elif data.find('hug ') != -1:
-            irc.send('PRIVMSG #%s :%s had a hug with %s\r\n' % (CHAN, user, data[data.find('hug') + 4:len(data) - 1]))
-
-        elif data.find('pia ') != -1:
-            irc.send('PRIVMSG #%s :(╬￣皿￣)凸 Pia! %s\r\n' % (CHAN, data[data.find('pia') + 4:len(data) - 1]))
-
-        elif data.find('test') != -1:
-            irc.send('PRIVMSG #%s :%s: Tested Successfully!\r\n' % (CHAN, user))
-
-        elif data.find('fortune') != -1:
+        elif re.match(r'^fortune\r$', inc):
             output = os.popen('fortune').read().split('\n')
             for i in xrange(len(output)):
                 irc.send('PRIVMSG #%s :%s\r' % (CHAN, output[i].replace('\t', '    ')))
 
-        # Exit (Default: Close)
-        # elif data.find('quit') != -1:
-            # irc.send('QUIT\r\n')
-            # exit()
+        elif re.match(r'^time\r$', inc):
+            os.environ['TZ'] = 'Asia/Shanghai'
+            time.tzset()
+            irc.send('PRIVMSG #%s :%s: Time: %s (CST/GMT+8)\r' % (CHAN, user, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())))
+
+        elif re.match(r'^time\stz:\d{1,3}\r$', inc):
+            if int(inc[inc.find('tz:') + 3:len(inc) - 1]) <= 14 and int(inc[inc.find('tz:') + 3:len(inc) - 1]) >= -12:
+                irc.send('PRIVMSG #%s :%s: Time: %s (CST/GMT+%s)\r' % (CHAN, user, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time() - 8 * 3600 + int('%s' % inc[inc.find('tz:') + 3:len(inc) - 1]) * 3600)), int(inc[inc.find('tz:') + 3:len(inc) - 1])))
+
+            else :
+                irc.send('PRIVMSG #%s :%s: Argument must be lower than 14 and higher than -12\r' % (CHAN, user))
+
+        elif re.match(r'^time\suts\r$', inc):
+            irc.send('PRIVMSG #%s :%s: Unix Timestamp: %s\r' % (CHAN, user, time.time()))
