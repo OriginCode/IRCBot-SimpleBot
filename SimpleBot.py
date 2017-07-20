@@ -4,7 +4,7 @@ import socket, time, ssl, os, re
 # Informations
 NETWORK = 'irc.freenode.net'
 NICK = 'SimpleBot'
-CHAN = 'linuxba'
+CHAN = 'liuyanbot'
 PORT = 6697
 PASSWD = 'Aa32504863'
 
@@ -66,3 +66,15 @@ while True:
 
         elif re.match(r'^time\suts\r$', inc):
             irc.send('PRIVMSG #%s :%s: Unix Timestamp: %s\r' % (CHAN, user, time.time()))
+
+        elif re.match(r'^\d\sadd\s\d\r$', inc):
+            irc.send('PRIVMSG #%s :%s: %s\r' % (CHAN, user, float(inc[:inc.find('add')]) + float(inc[inc.find('add') + 4:len(inc) - 1])))
+
+        elif re.match(r'^\d\ssub\d\r$', inc):
+            irc.send('PRIVMSG #%s :%s: %s\r' % (CHAN, user, float(inc[:inc.find('sub')]) - float(inc[inc.find('sub') + 4:len(inc) - 1])))
+
+        elif re.match(r'^\d\smtp\s\d\r$', inc):
+            irc.send('PRIVMSG #%s :%s: %s\r' % (CHAN, user, float(inc[:inc.find('mtp')]) * float(inc[inc.find('mtp') + 4:len(inc) - 1])))
+
+        elif re.match(r'^\d\sdiv\s\d\r$', inc):
+            irc.send('PRIVMSG #%s :%s: %s\r' % (CHAN, user, float(inc[:inc.find('div')]) / float(inc[inc.find('div') + 4:len(inc) - 1])))
