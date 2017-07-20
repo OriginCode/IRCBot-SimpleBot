@@ -33,7 +33,6 @@ while True:
 
     if data.find('::') != -1:
         inc = str(data[data.find('::') + 2:len(data) - 1])
-        print inc
         if re.match(r'^test\r$', inc):
             irc.send('PRIVMSG #%s :Success!\r' % CHAN)
 
