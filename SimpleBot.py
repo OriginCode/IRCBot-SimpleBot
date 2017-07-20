@@ -22,9 +22,6 @@ irc.send('NICK %s\r' % NICK)
 irc.send('USER %s %s %s :SimpleBot\r' % (NICK, NICK, NICK))
 irc.send('JOIN #%s\r' % CHAN)
 
-# Module RE Matches
-
-
 # Functions
 while True:
     data = irc.recv(4096)
