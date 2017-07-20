@@ -1,5 +1,5 @@
 # Import area
-import socket, time, ssl, os, types, re
+import socket, time, ssl, os, re
 
 # Informations
 NETWORK = 'irc.freenode.net'
