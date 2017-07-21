@@ -51,7 +51,7 @@ while True:
 
         elif re.match(r'^fortune\r$', inc):
             output = os.popen('fortune').read().split('\n')
-            for i in xrange(len(output)):
+            for i in xrange(len(output) - 1):
                 irc.send('PRIVMSG #%s :%s\r' % (CHAN, output[i].replace('\t', '    ')))
 
         elif re.match(r'^echo\s\w*\r$', inc):
@@ -85,16 +85,12 @@ while True:
         elif re.match(r'^\d\smtp\s\d\r$', inc):
             irc.send('PRIVMSG #%s :%s: %s\r' % (CHAN, user, float(inc[:inc.find('mtp')]) * float(inc[inc.find('mtp') + 4:len(inc) - 1])))
 
-        elif re.match(r'^\d\sdiv\s\d\r$', inc):
+        elif re.match(r'^\d\sdiv\s\d\r', inc):
             irc.send('PRIVMSG #%s :%s: %s\r' % (CHAN, user, float(inc[:inc.find('div')]) / float(inc[inc.find('div') + 4:len(inc) - 1])))
 
-    elif user == 'OriginCode' and data.find('::') != -1:
-        inc = str(data[data.find('::') + 2:len(data) - 1])
-        if re.match('^sh\s\w\r$', inc):
-            output = os.popen(inc[inc.find('sh') + 3:len(inc) - 1]).read().split('\n')
-            if output == " " or output == "":
-                irc.send('PRIVMSG #%s :No output.' % (CHAN, user))
-
-            else:
-                for i in xrange(len(output)):
+        elif user == 'OriginCode':
+            if re.match('^sh\s.*\r', inc):
+                output = os.popen(inc[inc.find('sh') + 3:len(inc) - 1]).read().split('\n')
+                for i in xrange(len(output) - 1):
                     irc.send('PRIVMSG #%s :%s\r' % (CHAN, output[i].replace('\t', '    ')))
+
