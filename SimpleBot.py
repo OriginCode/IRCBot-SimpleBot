@@ -41,8 +41,10 @@ while True:
             irc.send('PRIVMSG %s :The command of %s starts with \":\".\r' % (user, NICK))
             irc.send('PRIVMSG %s :----------Help of %s----------\r' % (user, NICK))
             irc.send('PRIVMSG %s :[version]Show the version of %s\r.' % (user, NICK))
-            irc.send('PRIVMSG %s :[time]Show the time. Format: :time (tz:[Number](Default: GMT+8))(uts(Show Unix Timestamp)).\r\n' % user)
-            irc.send('PRIVMSG %s :[fortune]Tell a fortune.\r' % (user))
+            irc.send('PRIVMSG %s :[time]Show the time. Format: :time (tz:[Number](Default: GMT+8))(uts(Show Unix Timestamp)).\r' % user)
+            irc.send('PRIVMSG %s :[fortune]Tell a fortune.\r' % user)
+            irc.send('PRIVMSG %s :[echo ...]Print the message you told to %s.\r' % (user, NICK))
+            irc.send('PRIVMSG %s :[x add/sub/mtp/div y]Basic calculate + - * /.\r' % user)
 
         elif re.match(r'^version\r$', inc):
             irc.send('PRIVMSG #%s :%s: 3 - Alpha\r' % (CHAN, user))
