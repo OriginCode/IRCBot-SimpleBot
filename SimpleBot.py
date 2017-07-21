@@ -4,7 +4,7 @@ import socket, time, ssl, os, re
 # Global Information
 NETWORK = 'irc.freenode.net'
 NICK = 'SimpleBot'
-CHAN = 'liuyanbot'
+CHAN = 'linuxba'
 PORT = 6697
 PASSWD = 'Aa32504863'
 
