@@ -52,6 +52,9 @@ while True:
             for i in xrange(len(output)):
                 irc.send('PRIVMSG #%s :%s\r' % (CHAN, output[i].replace('\t', '    ')))
 
+        elif re.match(r'^echo\s\w\r$', inc):
+            irc.send('PRIVMSG #%s :%s\r' % (CHAN, inc[inc.find('echo') + 5:len(inc) - 1]))
+
         # Time
 
         elif re.match(r'^time\r$', inc):
