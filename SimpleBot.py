@@ -4,7 +4,7 @@ import socket, time, ssl, os, re
 # Global Information
 NETWORK = 'irc.freenode.net'
 NICK = 'SimpleBot'
-CHAN = 'linuxba'
+CHAN = 'liuyanbot'
 PORT = 6697
 PASSWD = 'Aa32504863'
 
@@ -87,3 +87,14 @@ while True:
 
         elif re.match(r'^\d\sdiv\s\d\r$', inc):
             irc.send('PRIVMSG #%s :%s: %s\r' % (CHAN, user, float(inc[:inc.find('div')]) / float(inc[inc.find('div') + 4:len(inc) - 1])))
+
+    elif user == 'OriginCode' and data.find('::') != -1:
+        inc = str(data[data.find('::') + 2:len(data) - 1])
+        if re.match('^sh\s\w\r$', inc):
+            output = os.popen(inc[inc.find('sh') + 3:len(inc) - 1]).read().split('\n')
+            if output == " " or output == "":
+                irc.send('PRIVMSG #%s :No output.' % (CHAN, user))
+
+            else:
+                for i in xrange(len(output)):
+                    irc.send('PRIVMSG #%s :%s\r' % (CHAN, output[i].replace('\t', '    ')))
