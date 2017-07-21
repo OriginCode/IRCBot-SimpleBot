@@ -4,7 +4,7 @@ import socket, time, ssl, os, re
 # Global Information
 NETWORK = 'irc.freenode.net'
 NICK = 'SimpleBot'
-CHAN = 'linuxba'
+CHAN = 'liuyanbot'
 PORT = 6697
 PASSWD = 'Aa32504863'
 
@@ -40,7 +40,7 @@ while True:
             irc.send('PRIVMSG #%s :%s: See the private chat.\r' % (CHAN, user))
             irc.send('PRIVMSG %s :The command of %s starts with \":\".\r' % (user, NICK))
             irc.send('PRIVMSG %s :----------Help of %s----------\r' % (user, NICK))
-            irc.send('PRIVMSG %s :[version]Show the version of %s\r.' % (user, NICK))
+            irc.send('PRIVMSG %s :[version]Show the version of %s.\r' % (user, NICK))
             irc.send('PRIVMSG %s :[time]Show the time. Format: :time (tz:[Number](Default: GMT+8))(uts(Show Unix Timestamp)).\r' % user)
             irc.send('PRIVMSG %s :[fortune]Tell a fortune.\r' % user)
             irc.send('PRIVMSG %s :[echo ...]Print the message you told to %s.\r' % (user, NICK))
@@ -51,7 +51,7 @@ while True:
 
         elif re.match(r'^fortune\r$', inc):
             output = os.popen('fortune').read().split('\n')
-            for i in xrange(len(output)):
+            for i in xrange(len(output) - 1):
                 irc.send('PRIVMSG #%s :%s\r' % (CHAN, output[i].replace('\t', '    ')))
 
         elif re.match(r'^echo\s\w*\r$', inc):
@@ -85,5 +85,12 @@ while True:
         elif re.match(r'^\d\smtp\s\d\r$', inc):
             irc.send('PRIVMSG #%s :%s: %s\r' % (CHAN, user, float(inc[:inc.find('mtp')]) * float(inc[inc.find('mtp') + 4:len(inc) - 1])))
 
-        elif re.match(r'^\d\sdiv\s\d\r$', inc):
+        elif re.match(r'^\d\sdiv\s\d\r', inc):
             irc.send('PRIVMSG #%s :%s: %s\r' % (CHAN, user, float(inc[:inc.find('div')]) / float(inc[inc.find('div') + 4:len(inc) - 1])))
+
+        elif user == 'OriginCode':
+            if re.match('^sh\s.*\r', inc):
+                output = os.popen(inc[inc.find('sh') + 3:len(inc) - 1]).read().split('\n')
+                for i in xrange(len(output) - 1):
+                    irc.send('PRIVMSG #%s :%s\r' % (CHAN, output[i].replace('\t', '    ')))
+
