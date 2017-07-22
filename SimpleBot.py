@@ -8,7 +8,7 @@ import re
 # Global Information
 NETWORK = 'irc.freenode.net'
 NICK = 'SimpleBot'
-CHAN = 'linuxba'
+CHAN = 'liuyanbot'
 PORT = 6697
 PASSWD = 'Aa32504863'
 
@@ -29,7 +29,6 @@ irc.send('JOIN #%s\r' % CHAN)
 # Functions
 while True:
     data = irc.recv(4096)
-    print data
     user = data[data.find(':') + 1:data.find('!')]
 
     if data.find('PING') != -1:
@@ -92,7 +91,7 @@ while True:
         elif re.match(r'^\d\sdiv\s\d\r', inc):
             irc.send('PRIVMSG #%s :%s: %s\r' % (CHAN, user, float(inc[:inc.find('div')]) / float(inc[inc.find('div') + 4:len(inc) - 1])))
 
-        elif user == 'OriginCode' and re.match(r'^passwd\sOcPsWd\r$', inc):
+        elif user == 'OriginCode':
             if re.match(r'^sh\s.*\r$', inc):
                 output = os.popen(inc[inc.find('sh') + 3:len(inc) - 1]).read().split('\n')
                 for i in xrange(len(output) - 1):
