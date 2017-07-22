@@ -29,6 +29,7 @@ irc.send('JOIN #%s\r' % CHAN)
 # Functions
 while True:
     data = irc.recv(4096)
+    print data
     user = data[data.find(':') + 1:data.find('!')]
 
     if data.find('PING') != -1:
