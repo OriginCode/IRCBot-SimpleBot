@@ -1,5 +1,9 @@
 # Import area
-import socket, time, ssl, os, re
+import socket
+import ssl
+import time
+import os
+import re
 
 # Global Information
 NETWORK = 'irc.freenode.net'
@@ -32,7 +36,7 @@ while True:
         irc.send('PONG ' + data.split()[1] + '\r')
 
     if data.find('::') != -1:
-        inc = str(data[data.find('::') + 2:len(data) - 1])
+        inc = data[data.find('::') + 2:len(data) - 1]
         if re.match(r'^test\r$', inc):
             irc.send('PRIVMSG #%s :Success!\r' % CHAN)
 
@@ -89,8 +93,7 @@ while True:
             irc.send('PRIVMSG #%s :%s: %s\r' % (CHAN, user, float(inc[:inc.find('div')]) / float(inc[inc.find('div') + 4:len(inc) - 1])))
 
         elif user == 'OriginCode':
-            if re.match('^sh\s.*\r', inc):
+            if re.match(r'^sh\s.*\r$', inc):
                 output = os.popen(inc[inc.find('sh') + 3:len(inc) - 1]).read().split('\n')
                 for i in xrange(len(output) - 1):
                     irc.send('PRIVMSG #%s :%s\r' % (CHAN, output[i].replace('\t', '    ')))
-
