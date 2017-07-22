@@ -1,5 +1,9 @@
 # Import area
-import socket, time, ssl, os, re
+import socket
+import ssl
+import time
+import os
+import re
 
 # Global Information
 NETWORK = 'irc.freenode.net'
