@@ -93,7 +93,7 @@ while True:
             irc.send('PRIVMSG #%s :%s: %s\r' % (CHAN, user, float(inc[:inc.find('div')]) / float(inc[inc.find('div') + 4:len(inc) - 1])))
 
         elif user == 'OriginCode':
-            if re.match('^sh\s.*\r', inc):
+            if re.match(r'^sh\s.*\r$', inc):
                 output = os.popen(inc[inc.find('sh') + 3:len(inc) - 1]).read().split('\n')
                 for i in xrange(len(output) - 1):
                     irc.send('PRIVMSG #%s :%s\r' % (CHAN, output[i].replace('\t', '    ')))
