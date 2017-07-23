@@ -89,7 +89,7 @@ while True:
         elif re.match(r'^\d\smtp\s\d\r$', inc):
             irc.send('PRIVMSG #%s :%s: %s\r' % (CHAN, user, float(inc[:inc.find('mtp')]) * float(inc[inc.find('mtp') + 4:len(inc) - 1])))
 
-        elif re.match(r'^\d\sdiv\s\d\r', inc):
+        elif re.match(r'^\d\sdiv\s\d\r$', inc):
             irc.send('PRIVMSG #%s :%s: %s\r' % (CHAN, user, float(inc[:inc.find('div')]) / float(inc[inc.find('div') + 4:len(inc) - 1])))
 
         elif user == 'OriginCode':
