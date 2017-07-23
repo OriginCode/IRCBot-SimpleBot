@@ -83,7 +83,7 @@ while True:
         elif re.match(r'^\d\sadd\s\d\r$', inc):
             irc.send('PRIVMSG #%s :%s: %s\r' % (CHAN, user, float(inc[:inc.find('add')]) + float(inc[inc.find('add') + 4:len(inc) - 1])))
 
-        elif re.match(r'^\d\ssub\d\r$', inc):
+        elif re.match(r'^\d\ssub\s\d\r$', inc):
             irc.send('PRIVMSG #%s :%s: %s\r' % (CHAN, user, float(inc[:inc.find('sub')]) - float(inc[inc.find('sub') + 4:len(inc) - 1])))
 
         elif re.match(r'^\d\smtp\s\d\r$', inc):
