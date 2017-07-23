@@ -8,7 +8,7 @@ import re
 # Global Information
 NETWORK = 'irc.freenode.net'
 NICK = 'SimpleBot'
-CHAN = 'linuxba'
+CHAN = 'liuyanbot'
 PORT = 6697
 PASSWD = 'Aa32504863'
 
@@ -25,6 +25,57 @@ irc.send('PASS %s\r' % PASSWD)
 irc.send('NICK %s\r' % NICK)
 irc.send('USER %s %s %s :SimpleBot\r' % (NICK, NICK, NICK))
 irc.send('JOIN #%s\r' % CHAN)
+
+# Calculate
+l1_pattern = re.compile(r'\([^()]*\)')
+l2_pattern = re.compile(r'(-?\d+)(\.\d+)?[/*](-?\d+)(\.\d+)?')
+l3_pattern = re.compile(r'(-?\d+)(\.\d+)?[-+](-?\d+)(\.\d+)?')
+mul_sub_pattern = re.compile(r'(-?\d+)(\.\d+)?\*-(-?\d+)(\.\d+)?')
+div_sub_pattern = re.compile(r'(-?\d+)(\.\d+)?/-(-?\d+)(\.\d+)?')
+
+def min_cal(string):
+    if string.count('+') == 1:
+        return str(float(string[:string.find('+')]) + float(string[string.find('+')+1:]))
+    elif string[1:].count('-') == 1:
+        return str(float(string[:string.find('-', 1)]) - float(string[string.find('-', 1)+1:]))
+    elif string.count('*') == 1:
+        return str(float(string[:string.find('*')]) * float(string[string.find('*')+1:]))
+    elif string.count('/') == 1:
+        return str(float(string[:string.find('/')]) / float(string[string.find('/')+1:]))
+
+def nomal_numerator(string):
+    if string.count('+') + string.count('*') + string.count('/') == 0 and string[1:].find('-') < 0:
+        return string
+
+    elif string.count('+-') + string.count('--') + string.count('*-') + string.count('/-') != 0:
+        string = string.replace('+-', '-')
+        string = string.replace('--', '+')
+        if string.count('*-') != 0:
+            string = string.replace(mul_sub_pattern.search(string).group(),'-' + mul_sub_pattern.search(string).group().replace('*-', '*'))
+
+        if string.count('/-') != 0:
+            string = string.replace(div_sub_pattern.search(string).group(),'-' + div_sub_pattern.search(string).group().replace('/-', '/'))
+
+        return nomal_numerator(string)
+
+    elif string.count('*') + string.count('/') != 0:
+        from_str = l2_pattern.search(string).group()
+        string = string.replace(from_str, min_cal(from_str))
+        return nomal_numerator(string)
+
+    elif string.count('+') != 0 or string.count('-') != 0:
+        from_str = l3_pattern.search(string).group()
+        string = string.replace(from_str, min_cal(from_str))
+        return nomal_numerator(string)
+
+def l1_analysis(string):
+    if string.find('(') == -1:
+        return nomal_numerator(string)
+
+    else:
+        from_str = l1_pattern.search(string).group()
+        string = string.replace(from_str, nomal_numerator(from_str[1:-1]))
+        return l1_analysis(string)
 
 # Functions
 while True:
@@ -80,17 +131,17 @@ while True:
 
         # Calculate
 
-        elif re.match(r'^\d\sadd\s\d\r$', inc):
-            irc.send('PRIVMSG #%s :%s: %s\r' % (CHAN, user, float(inc[:inc.find('add')]) + float(inc[inc.find('add') + 4:len(inc) - 1])))
+        elif re.match(r'^cal\s.*', inc):
+            s = inc[inc.find('cal') + 4:len(inc) - 1]
+            s = s.replace(' ', '')
+            try:
+                l1_analysis(s)
 
-        elif re.match(r'^\d\ssub\s\d\r$', inc):
-            irc.send('PRIVMSG #%s :%s: %s\r' % (CHAN, user, float(inc[:inc.find('sub')]) - float(inc[inc.find('sub') + 4:len(inc) - 1])))
+            except AttributeError, errout:
+                irc.send('PRIVMSG #%s :%s: %s\r' % (CHAN, user, errout))
+                continue
 
-        elif re.match(r'^\d\smtp\s\d\r$', inc):
-            irc.send('PRIVMSG #%s :%s: %s\r' % (CHAN, user, float(inc[:inc.find('mtp')]) * float(inc[inc.find('mtp') + 4:len(inc) - 1])))
-
-        elif re.match(r'^\d\sdiv\s\d\r$', inc):
-            irc.send('PRIVMSG #%s :%s: %s\r' % (CHAN, user, float(inc[:inc.find('div')]) / float(inc[inc.find('div') + 4:len(inc) - 1])))
+            irc.send('PRIVMSG #%s :%s: %s\r' % (CHAN, user, l1_analysis(s)))
 
         elif user == 'OriginCode':
             if re.match(r'^sh\s.*\r$', inc):
