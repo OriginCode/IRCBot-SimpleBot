@@ -26,7 +26,7 @@ irc.send('NICK %s\r' % NICK)
 irc.send('USER %s %s %s :SimpleBot\r' % (NICK, NICK, NICK))
 irc.send('JOIN #%s\r' % CHAN)
 
-# Calculate
+# Calculate Author:niunai
 l1_pattern = re.compile(r'\([^()]*\)')
 l2_pattern = re.compile(r'(-?\d+)(\.\d+)?[/*](-?\d+)(\.\d+)?')
 l3_pattern = re.compile(r'(-?\d+)(\.\d+)?[-+](-?\d+)(\.\d+)?')
