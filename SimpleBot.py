@@ -8,7 +8,7 @@ import re
 # Global Information
 NETWORK = 'irc.freenode.net'
 NICK = 'SimpleBot'
-CHAN = 'liuyanbot'
+CHAN = 'linuxba'
 PORT = 6697
 PASSWD = 'Aa32504863'
 
@@ -33,6 +33,7 @@ l3_pattern = re.compile(r'(-?\d+)(\.\d+)?[-+](-?\d+)(\.\d+)?')
 mul_sub_pattern = re.compile(r'(-?\d+)(\.\d+)?\*-(-?\d+)(\.\d+)?')
 div_sub_pattern = re.compile(r'(-?\d+)(\.\d+)?/-(-?\d+)(\.\d+)?')
 
+
 def min_cal(string):
     if string.count('+') == 1:
         return str(float(string[:string.find('+')]) + float(string[string.find('+')+1:]))
@@ -42,6 +43,7 @@ def min_cal(string):
         return str(float(string[:string.find('*')]) * float(string[string.find('*')+1:]))
     elif string.count('/') == 1:
         return str(float(string[:string.find('/')]) / float(string[string.find('/')+1:]))
+
 
 def nomal_numerator(string):
     if string.count('+') + string.count('*') + string.count('/') == 0 and string[1:].find('-') < 0:
@@ -67,6 +69,7 @@ def nomal_numerator(string):
         from_str = l3_pattern.search(string).group()
         string = string.replace(from_str, min_cal(from_str))
         return nomal_numerator(string)
+
 
 def l1_analysis(string):
     if string.find('(') == -1:
@@ -99,10 +102,10 @@ while True:
             irc.send('PRIVMSG %s :[time]Show the time. Format: :time (tz:[Number](Default: GMT+8))(uts(Show Unix Timestamp)).\r' % user)
             irc.send('PRIVMSG %s :[fortune]Tell a fortune.\r' % user)
             irc.send('PRIVMSG %s :[echo ...]Print the message you told to %s.\r' % (user, NICK))
-            irc.send('PRIVMSG %s :[x add/sub/mtp/div y]Basic calculate + - * /.\r' % user)
+            irc.send('PRIVMSG %s :[cal ...]Calculator.\r' % user)
 
         elif re.match(r'^version\r$', inc):
-            irc.send('PRIVMSG #%s :%s: 3 - Alpha\r' % (CHAN, user))
+            irc.send('PRIVMSG #%s :%s: 3.1\r' % (CHAN, user))
 
         elif re.match(r'^fortune\r$', inc):
             output = os.popen('fortune').read().split('\n')
