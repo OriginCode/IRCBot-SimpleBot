@@ -102,7 +102,7 @@ while True:
             irc.send('PRIVMSG %s :[time]Show the time. Format: :time (tz:[Number](Default: GMT+8))(uts(Show Unix Timestamp)).\r' % user)
             irc.send('PRIVMSG %s :[fortune]Tell a fortune.\r' % user)
             irc.send('PRIVMSG %s :[echo ...]Print the message you told to %s.\r' % (user, NICK))
-            irc.send('PRIVMSG %s :[cal ...]Calculator.\r' % user)
+            irc.send('PRIVMSG %s :[calc ...]Calculator.\r' % user)
 
         elif re.match(r'^version\r$', inc):
             irc.send('PRIVMSG #%s :%s: 3.1\r' % (CHAN, user))
@@ -134,8 +134,8 @@ while True:
 
         # Calculate
 
-        elif re.match(r'^cal\s.*', inc):
-            s = inc[inc.find('cal') + 4:len(inc) - 1]
+        elif re.match(r'^calc\s.*', inc):
+            s = inc[inc.find('cal') + 5:len(inc) - 1]
             s = s.replace(' ', '')
             try:
                 l1_analysis(s)
