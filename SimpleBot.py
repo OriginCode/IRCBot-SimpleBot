@@ -85,7 +85,12 @@ while True:
     data = irc.recv(4096)
     print data
     user = data[data.find(':') + 1:data.find('!')]
-    chan = re.split(r'\s?', data)[2]
+    try:
+        chan = re.split(r'\s?', data)[2]
+
+    except IndexError, errout:
+        print errout
+        continue
 
     if re.match(r'#\w', chan):
         if data.find('PING') != -1:
