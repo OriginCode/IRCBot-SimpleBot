@@ -92,11 +92,11 @@ while True:
         print errout
         continue
 
-    if re.match(r'#\w', chan):
-        if data.find('PING') != -1:
+    if data.find('PING') != -1:
             irc.send('PONG ' + data.split()[1] + '\r')
 
-        elif data.find('::') != -1:
+    if re.match(r'#\w', chan):
+        if data.find('::') != -1:
             inc = data[data.find('::') + 2:len(data) - 1]
             if re.match(r'^test\r$', inc):
                 irc.send('PRIVMSG %s :Success!\r' % chan)
