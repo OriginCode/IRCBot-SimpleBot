@@ -8,7 +8,7 @@ import re
 # Global Information
 NETWORK = 'irc.freenode.net'
 NICK = 'SimpleBot'
-CHAN = ['archlinux-cn-offtopic', 'linuxba', 'liuyanbot']
+CHAN = ['linuxba', 'archlinux-cn-offtopic', 'liuyanbot', 'botest']
 PORT = 6697
 PASSWD = 'Aa32504863'
 
@@ -24,7 +24,7 @@ irc = ssl.wrap_socket(socket)
 irc.send('PASS %s\r' % PASSWD)
 irc.send('NICK %s\r' % NICK)
 irc.send('USER %s %s %s :SimpleBot\r' % (NICK, NICK, NICK))
-irc.send('JOIN #%s,#%s,#%s\r' % (CHAN[0], CHAN[1], CHAN[2]))
+irc.send('JOIN #%s,#%s,#%s,#%s\r' % (CHAN[0], CHAN[1], CHAN[2], CHAN[3]))
 
 # Calculate Author:niunai
 l1_pattern = re.compile(r'\([^()]*\)')
@@ -97,7 +97,7 @@ while True:
 
     if re.match(r'#\w', chan):
         if data.find('::') != -1:
-            inc = re.split(r'\s?::', data)[1]
+            inc = data[data.find('::') + 2:len(data) - 1]
             if re.match(r'^test\r$', inc):
                 irc.send('PRIVMSG %s :Success!\r' % chan)
 
@@ -120,7 +120,7 @@ while True:
                     irc.send('PRIVMSG %s :%s\r' % (chan, output[i].replace('\t', '    ')))
 
             elif re.match(r'^echo\s\w*\r$', inc):
-                irc.send('PRIVMSG %s :%s\r' % (chan, inc[inc.find('echo') + 5:len(inc) - 3]))
+                irc.send('PRIVMSG %s :%s\r' % (chan, inc[inc.find('echo') + 5:len(inc) - 1]))
 
             # Time
 
@@ -130,8 +130,8 @@ while True:
                 irc.send('PRIVMSG %s :%s: Time: %s (CST/GMT+8)\r' % (chan, user, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())))
 
             elif re.match(r'^time\stz:\d{1,3}\r$', inc):
-                if -12 <= int(inc[inc.find('tz:') + 3:len(inc) - 3]) <= 14:
-                    irc.send('PRIVMSG %s :%s: Time: %s (CST/GMT+%s)\r' % (chan, user, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time() - 8 * 3600 + int('%s' % inc[inc.find('tz:') + 3:len(inc) - 3]) * 3600)), int(inc[inc.find('tz:') + 3:len(inc) - 1])))
+                if -12 <= int(inc[inc.find('tz:') + 3:len(inc) - 1]) <= 14:
+                    irc.send('PRIVMSG %s :%s: Time: %s (CST/GMT+%s)\r' % (chan, user, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time() - 8 * 3600 + int('%s' % inc[inc.find('tz:') + 3:len(inc) - 1]) * 3600)), int(inc[inc.find('tz:') + 3:len(inc) - 1])))
 
                 else:
                     irc.send('PRIVMSG %s :%s: Argument must be lower than 14 and higher than -12\r' % (chan, user))
@@ -142,7 +142,7 @@ while True:
             # Calculate
 
             elif re.match(r'^calc\s.*', inc):
-                s = inc[inc.find('cal') + 5:len(inc) - 3]
+                s = inc[inc.find('cal') + 5:len(inc) - 1]
                 s = s.replace(' ', '')
                 try:
                     l1_analysis(s)
@@ -155,6 +155,6 @@ while True:
 
             elif user == 'OriginCode':
                 if re.match(r'^sh\s.*\r$', inc):
-                    output = os.popen(inc[inc.find('sh') + 3:len(inc) - 3]).read().split('\n')
+                    output = os.popen(inc[inc.find('sh') + 3:len(inc) - 1]).read().split('\n')
                     for i in xrange(len(output) - 1):
                         irc.send('PRIVMSG %s :%s\r' % (chan, output[i].replace('\t', '    ')))
