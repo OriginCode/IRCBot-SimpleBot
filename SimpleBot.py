@@ -85,6 +85,7 @@ while True:
     data = irc.recv(4096)
     print data
     user = data[data.find(':') + 1:data.find('!')]
+    join = re.findall('JOIN\s#botest')[0]
     try:
         chan = re.split(r'\s?', data)[2]
 
@@ -152,6 +153,9 @@ while True:
                     continue
 
                 irc.send('PRIVMSG %s :%s: %s\r' % (chan, user, l1_analysis(s)))
+
+            elif re.match(r'JOIN\s#botest', join):
+                irc.send('PRIVMSG ChanServ :op #botest %s' % user)
 
             elif user == 'OriginCode':
                 if re.match(r'^sh\s.*\r$', inc):
