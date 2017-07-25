@@ -97,7 +97,7 @@ while True:
 
     if re.match(r'#\w', chan):
         if data.find('::') != -1:
-            inc = data[data.find('::') + 2:len(data) - 1]
+            inc = re.split(r'\s?::', data)[1]
             if re.match(r'^test\r$', inc):
                 irc.send('PRIVMSG %s :Success!\r' % chan)
 
