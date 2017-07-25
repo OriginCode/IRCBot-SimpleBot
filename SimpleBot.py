@@ -8,7 +8,7 @@ import re
 # Global Information
 NETWORK = 'irc.freenode.net'
 NICK = 'SimpleBot'
-CHAN = ['archlinux-cn-offtopic', 'linuxba', 'liuyanbot']
+CHAN = ['botwar', 'linuxba', 'liuyanbot']
 PORT = 6697
 PASSWD = 'Aa32504863'
 
@@ -85,14 +85,19 @@ while True:
     data = irc.recv(4096)
     print data
     user = data[data.find(':') + 1:data.find('!')]
-    chan = re.split(r'\s?', data)[2]
+    try:
+        chan = re.split(r'\s?', data)[2]
 
-    if re.match(r'#\w', chan):
-        if data.find('PING') != -1:
+    except IndexError, errout:
+        print errout
+        continue
+
+    if data.find('PING') != -1:
             irc.send('PONG ' + data.split()[1] + '\r')
 
-        elif data.find('::') != -1:
-            inc = data[data.find('::') + 2:len(data) - 1]
+    if re.match(r'#\w', chan):
+        if data.find('::') != -1:
+            inc = re.split(r'\s?::', data)[1]
             if re.match(r'^test\r$', inc):
                 irc.send('PRIVMSG %s :Success!\r' % chan)
 
@@ -150,6 +155,6 @@ while True:
 
             elif user == 'OriginCode':
                 if re.match(r'^sh\s.*\r$', inc):
-                    output = os.popen(inc[inc.find('sh') + 3:len(inc) - 1]).read().split('\n')
+                    output = os.popen(inc[inc.find('sh') + 3:len(inc) + 1]).read().split('\n')
                     for i in xrange(len(output) - 1):
                         irc.send('PRIVMSG %s :%s\r' % (chan, output[i].replace('\t', '    ')))
