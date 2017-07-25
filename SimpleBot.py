@@ -85,7 +85,7 @@ while True:
     data = irc.recv(4096)
     print data
     user = data[data.find(':') + 1:data.find('!')]
-    join = re.findall('JOIN\s#botest')[0]
+    join = re.findall('JOIN\s#botest', data)[0]
     try:
         chan = re.split(r'\s?', data)[2]
 
