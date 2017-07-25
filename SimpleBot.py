@@ -119,7 +119,7 @@ while True:
                 for i in xrange(len(output) - 1):
                     irc.send('PRIVMSG %s :%s\r' % (chan, output[i].replace('\t', '    ')))
 
-            elif re.match(r'^echo\s\w*\r$', inc):
+            elif re.match(r'^echo\s.*\r$', inc):
                 irc.send('PRIVMSG %s :%s\r' % (chan, inc[inc.find('echo') + 5:len(inc) - 1]))
 
             # Time
@@ -141,7 +141,7 @@ while True:
 
             # Calculate
 
-            elif re.match(r'^calc\s.*', inc):
+            elif re.match(r'^calc\s.*\r$', inc):
                 s = inc[inc.find('cal') + 5:len(inc) - 1]
                 s = s.replace(' ', '')
                 try:
