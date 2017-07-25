@@ -147,7 +147,7 @@ while True:
                 try:
                     l1_analysis(s)
 
-                except AttributeError, errout:
+                except Exception, errout:
                     irc.send('PRIVMSG %s :%s: %s\r' % (chan, user, errout))
                     continue
 
