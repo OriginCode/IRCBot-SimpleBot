@@ -8,7 +8,7 @@ import re
 # Global Information
 NETWORK = 'irc.freenode.net'
 NICK = 'SimpleBot'
-CHAN = ['botwar', 'linuxba', 'liuyanbot']
+CHAN = ['linuxba', 'archlinux-cn-offtopic', 'liuyanbot', 'botest']
 PORT = 6697
 PASSWD = 'Aa32504863'
 
@@ -24,7 +24,7 @@ irc = ssl.wrap_socket(socket)
 irc.send('PASS %s\r' % PASSWD)
 irc.send('NICK %s\r' % NICK)
 irc.send('USER %s %s %s :SimpleBot\r' % (NICK, NICK, NICK))
-irc.send('JOIN #%s,#%s,#%s\r' % (CHAN[0], CHAN[1], CHAN[2]))
+irc.send('JOIN #%s,#%s,#%s,#%s\r' % (CHAN[0], CHAN[1], CHAN[2], CHAN[3]))
 
 # Calculate Author:niunai
 l1_pattern = re.compile(r'\([^()]*\)')
@@ -97,7 +97,7 @@ while True:
 
     if re.match(r'#\w', chan):
         if data.find('::') != -1:
-            inc = re.split(r'\s?::', data)[1]
+            inc = data[data.find('::') + 2:len(data) - 1]
             if re.match(r'^test\r$', inc):
                 irc.send('PRIVMSG %s :Success!\r' % chan)
 
@@ -155,6 +155,6 @@ while True:
 
             elif user == 'OriginCode':
                 if re.match(r'^sh\s.*\r$', inc):
-                    output = os.popen(inc[inc.find('sh') + 3:len(inc) + 1]).read().split('\n')
+                    output = os.popen(inc[inc.find('sh') + 3:len(inc) - 1]).read().split('\n')
                     for i in xrange(len(output) - 1):
                         irc.send('PRIVMSG %s :%s\r' % (chan, output[i].replace('\t', '    ')))
