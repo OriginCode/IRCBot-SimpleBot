@@ -120,7 +120,7 @@ while True:
                     irc.send('PRIVMSG %s :%s\r' % (chan, output[i].replace('\t', '    ')))
 
             elif re.match(r'^echo\s\w*\r$', inc):
-                irc.send('PRIVMSG %s :%s\r' % (chan, inc[inc.find('echo') + 5:len(inc) - 1]))
+                irc.send('PRIVMSG %s :%s\r' % (chan, inc[inc.find('echo') + 5:len(inc) - 3]))
 
             # Time
 
@@ -130,8 +130,8 @@ while True:
                 irc.send('PRIVMSG %s :%s: Time: %s (CST/GMT+8)\r' % (chan, user, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())))
 
             elif re.match(r'^time\stz:\d{1,3}\r$', inc):
-                if -12 <= int(inc[inc.find('tz:') + 3:len(inc) - 1]) <= 14:
-                    irc.send('PRIVMSG %s :%s: Time: %s (CST/GMT+%s)\r' % (chan, user, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time() - 8 * 3600 + int('%s' % inc[inc.find('tz:') + 3:len(inc) - 1]) * 3600)), int(inc[inc.find('tz:') + 3:len(inc) - 1])))
+                if -12 <= int(inc[inc.find('tz:') + 3:len(inc) - 3]) <= 14:
+                    irc.send('PRIVMSG %s :%s: Time: %s (CST/GMT+%s)\r' % (chan, user, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time() - 8 * 3600 + int('%s' % inc[inc.find('tz:') + 3:len(inc) - 3]) * 3600)), int(inc[inc.find('tz:') + 3:len(inc) - 1])))
 
                 else:
                     irc.send('PRIVMSG %s :%s: Argument must be lower than 14 and higher than -12\r' % (chan, user))
@@ -142,7 +142,7 @@ while True:
             # Calculate
 
             elif re.match(r'^calc\s.*', inc):
-                s = inc[inc.find('cal') + 5:len(inc) - 1]
+                s = inc[inc.find('cal') + 5:len(inc) - 3]
                 s = s.replace(' ', '')
                 try:
                     l1_analysis(s)
@@ -155,6 +155,6 @@ while True:
 
             elif user == 'OriginCode':
                 if re.match(r'^sh\s.*\r$', inc):
-                    output = os.popen(inc[inc.find('sh') + 3:len(inc) - 1]).read().split('\n')
+                    output = os.popen(inc[inc.find('sh') + 3:len(inc) - 3]).read().split('\n')
                     for i in xrange(len(output) - 1):
                         irc.send('PRIVMSG %s :%s\r' % (chan, output[i].replace('\t', '    ')))
