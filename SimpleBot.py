@@ -151,7 +151,7 @@ while True:
                     irc.send('PRIVMSG %s :%s: %s\r' % (chan, user, errout))
                     continue
 
-                irc.send('PRIVMSG %s :%s: %s\r' % (chan, user, l1_analysis(s)))1
+                irc.send('PRIVMSG %s :%s: %s\r' % (chan, user, l1_analysis(s)))
 
             elif user == 'OriginCode':
                 if re.match(r'^sh\s.*\r$', inc):
