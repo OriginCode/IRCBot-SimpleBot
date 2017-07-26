@@ -8,7 +8,7 @@ import re
 # Global Information
 NETWORK = 'irc.freenode.net'
 NICK = 'SimpleBot'
-CHAN = ['liuyanbot', 'archlinux-cn-offtopic', 'linuxba']
+CHAN = ['liuyanbot', 'linuxba', 'berton-research']
 PORT = 6697
 PASSWD = 'Aa32504863'
 
@@ -110,6 +110,7 @@ while True:
                 irc.send('PRIVMSG %s :[fortune]Tell a fortune.\r' % user)
                 irc.send('PRIVMSG %s :[echo ...]Print the message you told to %s.\r' % (user, NICK))
                 irc.send('PRIVMSG %s :[calc ...]Calculator.\r' % user)
+                irc.send('PRIVMSG %s :[tell #channel ...]Tell something to the other channel.\r' % user)
 
             elif re.match(r'^version\r$', inc):
                 irc.send('PRIVMSG %s :%s: 3.1\r' % (chan, user))
@@ -153,8 +154,14 @@ while True:
 
                 irc.send('PRIVMSG %s :%s: %s\r' % (chan, user, l1_analysis(s)))
 
-            elif re.match(r'^tell\s#%s\s.*\r$' % CHAN[0], inc) or re.match(r'^tell\s#%s\s.*\r$' % CHAN[1], inc) or re.match(r'^tell\s#%s\s.*\r$' % CHAN[2], inc):
+            elif re.match(r'^tell\s#.*\s.*\r$', inc):
                 irc.send('PRIVMSG %s :%s from %s told: %s\r' % (re.split('\s', inc)[1], user, chan, re.split('\s', inc)[2]))
+                data = irc.recv(4096)
+                if re.split('\s', data)[1] == '401':
+                    irc.send('PRIVMSG %s :%s: No such nick or channel.\r' % (chan, user))
+
+                elif re.split('\s', data)[1] == '404':
+                    irc.send('PRIVMSG %s :%s: Only available for these channel: #%s, #%s, #%s\r' % (chan, user, CHAN[0], CHAN[1], CHAN[2]))
 
             elif user == 'OriginCode':
                 if re.match(r'^sh\s.*\r$', inc):
