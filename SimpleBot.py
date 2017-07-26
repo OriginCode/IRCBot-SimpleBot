@@ -8,7 +8,7 @@ import re
 # Global Information
 NETWORK = 'irc.freenode.net'
 NICK = 'SimpleBot'
-CHAN = ['liuyanbot', 'linuxba', 'berton-research']
+CHAN = ['berton-research', 'linuxba', 'tox-cn']
 PORT = 6697
 PASSWD = 'Aa32504863'
 
@@ -113,14 +113,14 @@ while True:
                 irc.send('PRIVMSG %s :[tell #channel ...]Tell something to the other channel.\r' % user)
 
             elif re.match(r'^version\r$', inc):
-                irc.send('PRIVMSG %s :%s: 3.1\r' % (chan, user))
+                irc.send('PRIVMSG %s :%s: 3.2\r' % (chan, user))
 
             elif re.match(r'^fortune\r$', inc):
                 output = os.popen('fortune').read().split('\n')
                 for i in xrange(len(output) - 1):
                     irc.send('PRIVMSG %s :%s\r' % (chan, output[i].replace('\t', '    ')))
 
-            elif re.match(r'^echo\s.*\r$', inc):
+            elif re.match(r'^echo\s.+\r$', inc):
                 irc.send('PRIVMSG %s :%s\r' % (chan, inc[inc.find('echo') + 5:len(inc) - 1]))
 
             # Time
@@ -130,7 +130,7 @@ while True:
                 time.tzset()
                 irc.send('PRIVMSG %s :%s: Time: %s (CST/GMT+8)\r' % (chan, user, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())))
 
-            elif re.match(r'^time\stz:\d{1,3}\r$', inc):
+            elif re.match(r'^time\stz:[+-]\d{1,3}\r$', inc):
                 if -12 <= int(inc[inc.find('tz:') + 3:len(inc) - 1]) <= 14:
                     irc.send('PRIVMSG %s :%s: Time: %s (CST/GMT+%s)\r' % (chan, user, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time() - 8 * 3600 + int('%s' % inc[inc.find('tz:') + 3:len(inc) - 1]) * 3600)), int(inc[inc.find('tz:') + 3:len(inc) - 1])))
 
@@ -142,7 +142,7 @@ while True:
 
             # Calculate
 
-            elif re.match(r'^calc\s.*\r$', inc):
+            elif re.match(r'^calc\s.+\r$', inc):
                 s = inc[inc.find('cal') + 5:len(inc) - 1]
                 s = s.replace(' ', '')
                 try:
@@ -154,7 +154,7 @@ while True:
 
                 irc.send('PRIVMSG %s :%s: %s\r' % (chan, user, l1_analysis(s)))
 
-            elif re.match(r'^tell\s#.*\s.*\r$', inc):
+            elif re.match(r'^tell\s#.+\s.+\r$', inc):
                 irc.send('PRIVMSG %s :%s from %s told: %s\r' % (re.split('\s', inc)[1], user, chan, re.split('\s', inc)[2]))
                 data = irc.recv(4096)
                 if re.split('\s', data)[1] == '401':
@@ -164,7 +164,11 @@ while True:
                     irc.send('PRIVMSG %s :%s: Only available for these channel: #%s, #%s, #%s\r' % (chan, user, CHAN[0], CHAN[1], CHAN[2]))
 
             elif user == 'OriginCode':
-                if re.match(r'^sh\s.*\r$', inc):
+                if re.match(r'^sh\s.+\r$', inc):
                     output = os.popen(inc[inc.find('sh') + 3:len(inc) - 1]).read().split('\n')
                     for i in xrange(len(output) - 1):
                         irc.send('PRIVMSG %s :%s\r' % (chan, output[i].replace('\t', '    ')))
+
+                elif re.match(r'^exit\r$', inc):
+                    irc.send('QUIT :Going to leave.\r')
+                    exit(0)
