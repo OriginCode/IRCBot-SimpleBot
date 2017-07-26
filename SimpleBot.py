@@ -8,7 +8,7 @@ import re
 # Global Information
 NETWORK = 'irc.freenode.net'
 NICK = 'SimpleBot'
-CHAN = ['linuxba', 'archlinux-cn-offtopic', 'liuyanbot', 'botest']
+CHAN = ['liuyanbot', 'archlinux-cn-offtopic', 'linuxba']
 PORT = 6697
 PASSWD = 'Aa32504863'
 
@@ -24,7 +24,7 @@ irc = ssl.wrap_socket(socket)
 irc.send('PASS %s\r' % PASSWD)
 irc.send('NICK %s\r' % NICK)
 irc.send('USER %s %s %s :SimpleBot\r' % (NICK, NICK, NICK))
-irc.send('JOIN #%s,#%s,#%s,#%s\r' % (CHAN[0], CHAN[1], CHAN[2], CHAN[3]))
+irc.send('JOIN #%s,#%s,#%s\r' % (CHAN[0], CHAN[1], CHAN[2]))
 
 # Calculate Author:niunai
 l1_pattern = re.compile(r'\([^()]*\)')
@@ -152,6 +152,9 @@ while True:
                     continue
 
                 irc.send('PRIVMSG %s :%s: %s\r' % (chan, user, l1_analysis(s)))
+
+            elif re.match(r'^tell\s#%s\s.*\r$' % CHAN[0], inc) or re.match(r'^tell\s#%s\s.*\r$' % CHAN[1], inc) or re.match(r'^tell\s#%s\s.*\r$' % CHAN[2], inc):
+                irc.send('PRIVMSG %s :%s from %s told: %s\r' % (re.split('\s', inc)[1], user, chan, re.split('\s', inc)[2]))
 
             elif user == 'OriginCode':
                 if re.match(r'^sh\s.*\r$', inc):
