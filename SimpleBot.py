@@ -8,7 +8,7 @@ import re
 # Global Information
 NETWORK = 'irc.freenode.net'
 NICK = 'SimpleBot'
-CHAN = ['berton-research', 'linuxba', 'tox-cn']
+CHAN = ['archlinux-cn-offtopic', 'linuxba', 'tox-cn']
 PORT = 6697
 PASSWD = 'Aa32504863'
 
@@ -40,7 +40,7 @@ def min_cal(string):
     elif string[1:].count('-') == 1:
         return str(float(string[:string.find('-', 1)]) - float(string[string.find('-', 1)+1:]))
     elif string.count('*') == 1:
-        return str(float(string[:string.find('*')]) * float(string[string.find('*')+1:]))
+        return str(float(sCPUdddtring[:string.find('*')]) * float(string[string.find('*')+1:]))
     elif string.count('/') == 1:
         return str(float(string[:string.find('/')]) / float(string[string.find('/')+1:]))
 
