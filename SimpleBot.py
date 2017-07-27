@@ -110,7 +110,7 @@ while True:
                 irc.send('PRIVMSG %s :[fortune]Tell a fortune.\r' % user)
                 irc.send('PRIVMSG %s :[echo ...]Print the message you told to %s.\r' % (user, NICK))
                 irc.send('PRIVMSG %s :[calc ...]Calculator.\r' % user)
-                irc.send('PRIVMSG %s :[tell #channel ...]Tell something to the other channel.\r' % user)
+                irc.send('PRIVMSG %s :[tell #channel ...]Tell something to the other channel.(Not allowed space)\r' % user)
 
             elif re.match(r'^version\r$', inc):
                 irc.send('PRIVMSG %s :%s: 3.2\r' % (chan, user))
@@ -155,7 +155,9 @@ while True:
                 irc.send('PRIVMSG %s :%s: %s\r' % (chan, user, l1_analysis(s)))
 
             elif re.match(r'^tell\s#.+\s.+\r$', inc):
-                irc.send('PRIVMSG %s :%s from %s told: %s\r' % (re.split('\s', inc)[1], user, chan, re.split('\s', inc)[2]))
+                insert = re.split('\s', inc)
+                regex_split = re.split('\s', inc)
+                irc.send('PRIVMSG %s :%s from %s told: %s\r' % (regex_split[1], user, chan, regex_split[2]))
                 data = irc.recv(4096)
                 if re.split('\s', data)[1] == '401':
                     irc.send('PRIVMSG %s :%s: No such nick or channel.\r' % (chan, user))
