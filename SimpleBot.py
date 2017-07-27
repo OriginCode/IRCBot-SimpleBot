@@ -40,7 +40,7 @@ def min_cal(string):
     elif string[1:].count('-') == 1:
         return str(float(string[:string.find('-', 1)]) - float(string[string.find('-', 1)+1:]))
     elif string.count('*') == 1:
-        return str(float(sCPUdddtring[:string.find('*')]) * float(string[string.find('*')+1:]))
+        return str(float(string[:string.find('*')]) * float(string[string.find('*')+1:]))
     elif string.count('/') == 1:
         return str(float(string[:string.find('/')]) / float(string[string.find('/')+1:]))
 
