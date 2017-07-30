@@ -155,7 +155,6 @@ while True:
                 irc.send('PRIVMSG %s :%s: %s\r' % (chan, user, l1_analysis(s)))
 
             elif re.match(r'^tell\s#.+\s.+\r$', inc):
-                insert = re.split('\s', inc)
                 regex_split = re.split('\s', inc)
                 irc.send('PRIVMSG %s :%s from %s told: %s\r' % (regex_split[1], user, chan, regex_split[2]))
                 data = irc.recv(4096)
