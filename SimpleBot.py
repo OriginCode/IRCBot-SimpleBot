@@ -156,13 +156,17 @@ while True:
 
             elif re.match(r'^tell\s#.+\s.+\r$', inc):
                 regex_split = re.split('\s', inc)
-                irc.send('PRIVMSG %s :%s from %s told: %s\r' % (regex_split[1], user, chan, regex_split[2]))
+                insert = inc[inc.find('#') + len(regex_split[1]) + 1:len(inc)]
+                irc.send('PRIVMSG %s :%s from %s told: %s\r' % (regex_split[1], user, chan, insert))
                 data = irc.recv(4096)
                 if re.split('\s', data)[1] == '401':
                     irc.send('PRIVMSG %s :%s: No such nick or channel.\r' % (chan, user))
 
                 elif re.split('\s', data)[1] == '404':
                     irc.send('PRIVMSG %s :%s: Only available for these channel: #%s, #%s, #%s\r' % (chan, user, CHAN[0], CHAN[1], CHAN[2]))
+
+                else:
+                    irc.send('PRIVMSG %s :%s: Sent to %s!\r' % (chan, user, regex_split[1]))
 
             elif user == 'OriginCode':
                 if re.match(r'^sh\s.+\r$', inc):
