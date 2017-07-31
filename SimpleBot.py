@@ -7,10 +7,10 @@ import re
 
 # Global Information
 NETWORK = 'irc.freenode.net'
-NICK = 'SimpleBot'
-CHAN = ['archlinux-cn-offtopic', 'linuxba', 'tox-cn']
+NICK = 'NICKNAME'
+CHAN = ['CHANNEL 1', 'CHANNEL 2', 'CHANNEL 3']
 PORT = 6697
-PASSWD = 'Aa32504863'
+PASSWD = 'PASSWORD'
 
 socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -176,6 +176,6 @@ while True:
             elif re.match(r'^exit\r$', inc):
                 data = irc.recv(4096)
                 inc_ = data[data.find('::') + 2:len(data) - 1]
-                if re.match('^ps\s23333\r$', inc_):
+                if re.match('^ps\sADMIN_PASSWORD\r$', inc_):
                     irc.send('QUIT :Going to leave.\r')
                     exit(0)
