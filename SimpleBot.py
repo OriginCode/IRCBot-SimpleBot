@@ -168,12 +168,12 @@ while True:
                 else:
                     irc.send('PRIVMSG %s :%s: Sent to %s!\r' % (chan, user, regex_split[1]))
 
-            elif user == 'OriginCode':
-                if re.match(r'^sh\s.+\r$', inc):
-                    output = os.popen(inc[inc.find('sh') + 3:len(inc) - 1]).read().split('\n')
-                    for i in xrange(len(output) - 1):
-                        irc.send('PRIVMSG %s :%s\r' % (chan, output[i].replace('\t', '    ')))
+            # elif user == 'OriginCode':
+                # if re.match(r'^sh\s.+\r$', inc):
+                    # output = os.popen(inc[inc.find('sh') + 3:len(inc) - 1]).read().split('\n')
+                    # for i in xrange(len(output) - 1):
+                        # irc.send('PRIVMSG %s :%s\r' % (chan, output[i].replace('\t', '    ')))
 
-                elif re.match(r'^exit\r$', inc):
-                    irc.send('QUIT :Going to leave.\r')
-                    exit(0)
+                # elif re.match(r'^exit\r$', inc):
+                    # irc.send('QUIT :Going to leave.\r')
+                    # exit(0)
