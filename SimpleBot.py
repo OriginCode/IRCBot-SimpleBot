@@ -7,10 +7,10 @@ import re
 
 # Global Information
 NETWORK = 'irc.freenode.net'
-NICK = 'NICKNAME'
-CHAN = ['CHANNEL 1', 'CHANNEL 2', 'CHANNEL 3']
+NICK = 'SimpleBot'
+CHAN = ['archlinux-cn-offtopic', 'linuxba', 'tox-cn']
 PORT = 6697
-PASSWD = 'PASSWORD'
+PASSWD = 'Aa32504863'
 
 socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -110,7 +110,7 @@ while True:
                 irc.send('PRIVMSG %s :[fortune]Tell a fortune.\r' % user)
                 irc.send('PRIVMSG %s :[echo ...]Print the message you told to %s.\r' % (user, NICK))
                 irc.send('PRIVMSG %s :[calc ...]Calculator.\r' % user)
-                irc.send('PRIVMSG %s :[tell #channel ...]Tell something to the other channel.(Not allowed space)\r' % user)
+                irc.send('PRIVMSG %s :[tell #channel ...]Tell something to the other channel.\r' % user)
 
             elif re.match(r'^version\r$', inc):
                 irc.send('PRIVMSG %s :%s: 3.2\r' % (chan, user))
@@ -176,6 +176,6 @@ while True:
             elif re.match(r'^exit\r$', inc):
                 data = irc.recv(4096)
                 inc_ = data[data.find('::') + 2:len(data) - 1]
-                if re.match('^ps\sADMIN_PASSWORD\r$', inc_):
+                if re.match('^ps\s23333\r$', inc_):
                     irc.send('QUIT :Going to leave.\r')
                     exit(0)
