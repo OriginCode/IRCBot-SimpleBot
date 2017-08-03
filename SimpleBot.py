@@ -10,7 +10,7 @@ NETWORK = 'irc.freenode.net'
 NICK = 'SimpleBot'
 CHAN = ['archlinux-cn-offtopic', 'linuxba', 'tox-cn']
 PORT = 6697
-PASSWD = 'Aa32504863'
+PASSWD = 'PASSWORD'
 
 socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -168,7 +168,7 @@ while True:
             elif re.match(r'^sh\s.+\r$', inc):
                 data = irc.recv(4096)
                 inc_ = data[data.find('::') + 2:len(data) - 1]
-                if re.match('^ps\s23333\r$', inc_):
+                if re.match('^ps\sADMIN\r$', inc_):
                     output = os.popen(inc[inc.find('sh') + 3:len(inc) - 1]).read().split('\n')
                     for i in xrange(len(output) - 1):
                         irc.send('PRIVMSG %s :%s\r' % (chan, output[i].replace('\t', '    ')))
@@ -176,6 +176,6 @@ while True:
             elif re.match(r'^exit\r$', inc):
                 data = irc.recv(4096)
                 inc_ = data[data.find('::') + 2:len(data) - 1]
-                if re.match('^ps\s23333\r$', inc_):
+                if re.match('^ps\sADMIN\r$', inc_):
                     irc.send('QUIT :Going to leave.\r')
                     exit(0)
