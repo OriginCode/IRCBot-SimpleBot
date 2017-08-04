@@ -100,6 +100,10 @@ def main():
 
                     irc.send('PRIVMSG %s :%s: %s\r' % (chan, user, answer))
 
+                elif re.match(r'^wiki\s.+\r$', inc):
+                    insert = inc[inc.find('wiki') + 5:len(inc) - 1]
+                    irc.send('PRIVMSG %s :%s: --> https://en.wikipedia.org/wiki/%s <--\r' % (chan, user, insert))
+
                 elif re.match(r'^tell\s#.+\s.+\r$', inc):
                     regex_split = re.split('\s', inc)
                     insert = inc[inc.find('#') + len(regex_split[1]) + 1:len(inc)]
