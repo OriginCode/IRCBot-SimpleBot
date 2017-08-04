@@ -85,9 +85,6 @@ def l1_analysis(string):
         return l1_analysis(string)
 
 
-
-
-
 # Functions
 def main():
     while True:
@@ -119,7 +116,7 @@ def main():
                     irc.send('PRIVMSG %s :[fortune]Tell a fortune.\r' % user)
                     irc.send('PRIVMSG %s :[echo ...]Print the message you told to %s.\r' % (user, NICK))
                     irc.send('PRIVMSG %s :[calc ...]Calculator.\r' % user)
-                    irc.send('PRIVMSG %s :[tell #channel ...]Tell something to the other channel. Do not type other commands until someone said something.\r' % user)
+                    irc.send('PRIVMSG %s :[tell #channel ...]Tell something to the other channel. Do not type other commands until the bot replied sent successfully.\r' % user)
 
                 elif re.match(r'^version\r$', inc):
                     irc.send('PRIVMSG %s :%s: 3.2\r' % (chan, user))
