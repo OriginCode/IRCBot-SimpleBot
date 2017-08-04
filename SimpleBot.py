@@ -11,14 +11,6 @@ import re
 import module.calc_base as calc_base
 import module.base as base
 
-# Global Information
-base.NETWORK
-base.NICK
-base.CHAN
-base.PORT
-base.PASSWD
-base.ADMIN_PASSWD
-
 socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Main functions
@@ -32,13 +24,6 @@ irc.send('PASS %s\r' % base.PASSWD)
 irc.send('NICK %s\r' % base.NICK)
 irc.send('USER %s %s %s :SimpleBot\r' % (base.NICK, base.NICK, base.NICK))
 irc.send('JOIN #%s,#%s,#%s\r' % (base.CHAN[0], base.CHAN[1], base.CHAN[2]))
-
-# Calculate Author:niunai
-calc_base.l1_pattern
-calc_base.l2_pattern
-calc_base.l3_pattern
-calc_base.mul_sub_pattern
-calc_base.div_sub_pattern
 
 # Functions
 def main():
