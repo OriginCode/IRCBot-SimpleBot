@@ -1,2 +1,7 @@
 .idea
 .vscode
+module/base.pyc
+module/calc_base.pyc
+module/__init__.pyc
+calc_base
+re

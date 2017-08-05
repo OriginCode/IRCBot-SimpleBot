@@ -11,14 +11,6 @@ import re
 import module.calc_base as calc_base
 import module.base as base
 
-# Global Information
-base.NETWORK
-base.NICK
-base.CHAN
-base.PORT
-base.PASSWD
-base.ADMIN_PASSWD
-
 socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Main functions
@@ -32,13 +24,6 @@ irc.send('PASS %s\r' % base.PASSWD)
 irc.send('NICK %s\r' % base.NICK)
 irc.send('USER %s %s %s :SimpleBot\r' % (base.NICK, base.NICK, base.NICK))
 irc.send('JOIN #%s,#%s,#%s\r' % (base.CHAN[0], base.CHAN[1], base.CHAN[2]))
-
-# Calculate Author:niunai
-calc_base.l1_pattern
-calc_base.l2_pattern
-calc_base.l3_pattern
-calc_base.mul_sub_pattern
-calc_base.div_sub_pattern
 
 # Functions
 def main():
@@ -72,6 +57,7 @@ def main():
                     irc.send('PRIVMSG %s :[echo ...]Print the message you told to %s.\r' % (user, base.NICK))
                     irc.send('PRIVMSG %s :[calc ...]Calculator.\r' % user)
                     irc.send('PRIVMSG %s :[tell #channel ...]Tell something to the other channel. Do not type other commands until the bot replied sent successfully.\r' % user)
+                    irc.send('PRIVMSG %s :[wiki ...]Search in Wikipedia.\r' % user)
 
                 elif re.match(r'^version\r$', inc):
                     irc.send('PRIVMSG %s :%s: 3.2\r' % (chan, user))
@@ -114,6 +100,10 @@ def main():
                         continue
 
                     irc.send('PRIVMSG %s :%s: %s\r' % (chan, user, answer))
+
+                elif re.match(r'^wiki\s.+\r$', inc):
+                    insert = inc[inc.find('wiki') + 5:len(inc) - 1]
+                    irc.send('PRIVMSG %s :%s: --> https://en.wikipedia.org/wiki/%s <--\r' % (chan, user, insert))
 
                 elif re.match(r'^tell\s#.+\s.+\r$', inc):
                     regex_split = re.split('\s', inc)
