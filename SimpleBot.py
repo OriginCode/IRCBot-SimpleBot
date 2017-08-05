@@ -8,8 +8,17 @@ import time
 import os
 import re
 
+<<<<<<< HEAD
 import module.calc_base as calc_base
 import module.base as base
+=======
+# Global Information
+NETWORK = 'irc.freenode.net'
+NICK = 'NICKNAME'
+CHAN = ['archlinux-cn-offtopic', 'linuxba', 'tox-cn']
+PORT = 6697
+PASSWD = 'PASSWORD'
+>>>>>>> 3c0ee8fa4346d1d7e6c96e2b738fbc5671e2de1e
 
 socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -41,6 +50,7 @@ def main():
         if data.find('PING') != -1:
             irc.send('PONG ' + data.split()[1] + '\r')
 
+<<<<<<< HEAD
         if re.match(r'#\w', chan):
             if data.find('::') != -1:
                 inc = data[data.find('::') + 2:len(data) - 1]
@@ -140,3 +150,89 @@ def main():
 
 if __name__ == '__main__':
     main()
+=======
+    if re.match(r'#\w', chan):
+        if data.find('::') != -1:
+            inc = data[data.find('::') + 2:len(data) - 1]
+            if re.match(r'^test\r$', inc):
+                irc.send('PRIVMSG %s :Success!\r' % chan)
+
+            elif re.match(r'^help\r$', inc):
+                irc.send('PRIVMSG %s :%s: See the private chat.\r' % (chan, user))
+                irc.send('PRIVMSG %s :The command of %s starts with \":\".\r' % (user, NICK))
+                irc.send('PRIVMSG %s :----------Help of %s----------\r' % (user, NICK))
+                irc.send('PRIVMSG %s :[version]Show the version of %s.\r' % (user, NICK))
+                irc.send('PRIVMSG %s :[time]Show the time. Format: :time (tz:[Number](Default: GMT+8))(uts(Show Unix Timestamp)).\r' % user)
+                irc.send('PRIVMSG %s :[fortune]Tell a fortune.\r' % user)
+                irc.send('PRIVMSG %s :[echo ...]Print the message you told to %s.\r' % (user, NICK))
+                irc.send('PRIVMSG %s :[calc ...]Calculator.\r' % user)
+                irc.send('PRIVMSG %s :[tell #channel ...]Tell something to the other channel.\r' % user)
+
+            elif re.match(r'^version\r$', inc):
+                irc.send('PRIVMSG %s :%s: 3.2\r' % (chan, user))
+
+            elif re.match(r'^fortune\r$', inc):
+                output = os.popen('fortune').read().split('\n')
+                for i in xrange(len(output) - 1):
+                    irc.send('PRIVMSG %s :%s\r' % (chan, output[i].replace('\t', '    ')))
+
+            elif re.match(r'^echo\s.+\r$', inc):
+                irc.send('PRIVMSG %s :%s\r' % (chan, inc[inc.find('echo') + 5:len(inc) - 1]))
+
+            # Time
+
+            elif re.match(r'^time\r$', inc):
+                os.environ['TZ'] = 'Asia/Shanghai'
+                time.tzset()
+                irc.send('PRIVMSG %s :%s: Time: %s (CST/GMT+8)\r' % (chan, user, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())))
+
+            elif re.match(r'^time\stz:[+-]\d{1,3}\r$', inc):
+                if -12 <= int(inc[inc.find('tz:') + 3:len(inc) - 1]) <= 14:
+                    irc.send('PRIVMSG %s :%s: Time: %s (CST/GMT+%s)\r' % (chan, user, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time() - 8 * 3600 + int('%s' % inc[inc.find('tz:') + 3:len(inc) - 1]) * 3600)), int(inc[inc.find('tz:') + 3:len(inc) - 1])))
+
+                else:
+                    irc.send('PRIVMSG %s :%s: Argument must be lower than 14 and higher than -12\r' % (chan, user))
+
+            elif re.match(r'^time\suts\r$', inc):
+                irc.send('PRIVMSG %s :%s: Unix Timestamp: %s\r' % (chan, user, time.time()))
+
+            # Calculate
+
+            elif re.match(r'^calc\s.+\r$', inc):
+                s = inc[inc.find('cal') + 5:len(inc) - 1]
+                s = s.replace(' ', '')
+                try:
+                    l1_analysis(s)
+
+                except Exception, errout:
+                    irc.send('PRIVMSG %s :%s: %s\r' % (chan, user, errout))
+                    continue
+
+                irc.send('PRIVMSG %s :%s: %s\r' % (chan, user, l1_analysis(s)))
+
+            elif re.match(r'^tell\s#.+\s.+\r$', inc):
+                regex_split = re.split('\s', inc)
+                insert = inc[inc.find('#') + len(regex_split[1]) + 1:len(inc)]
+                irc.send('PRIVMSG %s :%s from %s told: %s\r' % (regex_split[1], user, chan, insert))
+                data = irc.recv(4096)
+                if re.split('\s', data)[1] == '401':
+                    irc.send('PRIVMSG %s :%s: No such nick or channel.\r' % (chan, user))
+
+                elif re.split('\s', data)[1] == '404':
+                    irc.send('PRIVMSG %s :%s: Only available for these channel: #%s, #%s, #%s\r' % (chan, user, CHAN[0], CHAN[1], CHAN[2]))
+
+            elif re.match(r'^sh\s.+\r$', inc):
+                data = irc.recv(4096)
+                inc_ = data[data.find('::') + 2:len(data) - 1]
+                if re.match('^ps\sPASSWORD\r$', inc_):
+                    output = os.popen(inc[inc.find('sh') + 3:len(inc) - 1]).read().split('\n')
+                    for i in xrange(len(output) - 1):
+                        irc.send('PRIVMSG %s :%s\r' % (chan, output[i].replace('\t', '    ')))
+
+            elif re.match(r'^exit\r$', inc):
+                data = irc.recv(4096)
+                inc_ = data[data.find('::') + 2:len(data) - 1]
+                if re.match('^ps\sPASSWORD\r$', inc_):
+                    irc.send('QUIT :Going to leave.\r')
+                    exit(0)
+>>>>>>> 3c0ee8fa4346d1d7e6c96e2b738fbc5671e2de1e
