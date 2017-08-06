@@ -7,6 +7,7 @@ import ssl
 import time
 import os
 import re
+import requests
 
 import module.calc_base as calc_base
 import module.base as base
@@ -102,8 +103,12 @@ def main():
                     irc.send('PRIVMSG %s :%s: %s\r' % (chan, user, answer))
 
                 elif re.match(r'^wiki\s.+\r$', inc):
-                    insert = inc[inc.find('wiki') + 5:len(inc) - 1]
-                    irc.send('PRIVMSG %s :%s: --> https://en.wikipedia.org/wiki/%s <--\r' % (chan, user, insert))
+                    insert = inc[inc.find('wiki') + 5:len(inc) - 1].replace(' ', '_')
+                    r = requests.get('https://en.wikipedia.org/wiki/%s' % insert)
+                    if r.status_code == 404:
+                        irc.send('PRIVMSG %s :%s: The wiki page is unreachable.\r' % (chan, user))
+                    else:
+                        irc.send('PRIVMSG %s :%s: --> https://en.wikipedia.org/wiki/%s <--\r' % (chan, user, insert))
 
                 elif re.match(r'^tell\s#.+\s.+\r$', inc):
                     regex_split = re.split('\s', inc)
