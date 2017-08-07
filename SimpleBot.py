@@ -115,7 +115,7 @@ def main():
                     irc.send('PRIVMSG %s :%s: --> https://github.com/search?q=%s <--\r' % (chan, user, insert))
 
                 elif re.match(r'^github\s.+\r$', inc):
-                    insert = inc[inc.find('github') + 7:len(inc) - 1]
+                    insert = inc[inc.find('github') + 7:len(inc) - 1].replace(' ', '+')
                     curl = os.popen('curl -H "Authentication: token TOKEN" -H "Accept: application/vnd.github.mercy-preview+json" https://api.github.com/search/repositories\?q\=%s' % insert).read()
                     try:
                         name = re.findall(r'\"full_name\":.+', curl)[0].split(': ')[1]
