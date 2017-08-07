@@ -111,7 +111,7 @@ def main():
                         irc.send('PRIVMSG %s :%s: --> https://en.wikipedia.org/wiki/%s <--\r' % (chan, user, insert))
 
                 elif re.match(r'^github\sall\s.+\r$', inc):
-                    insert = inc[inc.find('github all') + 11:len(inc) - 1]
+                    insert = inc[inc.find('github all') + 11:len(inc) - 1].replace(' ', '+')
                     irc.send('PRIVMSG %s :%s: --> https://github.com/search?q=%s <--\r' % (chan, user, insert))
 
                 elif re.match(r'^github\s.+\r$', inc):
