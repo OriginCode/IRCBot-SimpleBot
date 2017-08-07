@@ -106,9 +106,27 @@ def main():
                     insert = inc[inc.find('wiki') + 5:len(inc) - 1].replace(' ', '_')
                     r = requests.get('https://en.wikipedia.org/wiki/%s' % insert)
                     if r.status_code == 404:
-                        irc.send('PRIVMSG %s :%s: The wiki page is unreachable.\r' % (chan, user))
+                        irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
                     else:
                         irc.send('PRIVMSG %s :%s: --> https://en.wikipedia.org/wiki/%s <--\r' % (chan, user, insert))
+
+                elif re.match(r'^github\sall\s.+\r$', inc):
+                    insert = inc[inc.find('github all') + 11:len(inc) - 1]
+                    irc.send('PRIVMSG %s :%s: --> https://github.com/search?q=%s <--\r' % (chan, user, insert))
+
+                elif re.match(r'^github\s.+\r$', inc):
+                    insert = inc[inc.find('github') + 7:len(inc) - 1]
+                    curl = os.popen('curl -H "Authentication: token TOKEN" -H "Accept: application/vnd.github.mercy-preview+json" https://api.github.com/search/repositories\?q\=%s' % insert).read()
+                    try:
+                        name = re.findall(r'\"full_name\":.+', curl)[0].split(': ')[1]
+                        connection = re.findall(r'\"html_url\":.+', curl)[1].split(': ')[1]
+
+                    except IndexError, errout:
+                        irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
+                        print IndexError
+                        continue
+
+                    irc.send('PRIVMSG %s :%s: Top: [ %s ] - %s\r' % (chan, user, name[name.find('\"') + 1:len(name) - 2], connection[connection.find('\"') + 1:len(connection) - 2]))
 
                 elif re.match(r'^tell\s#.+\s.+\r$', inc):
                     regex_split = re.split('\s', inc)
