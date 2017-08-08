@@ -114,31 +114,6 @@ def main():
                     insert = inc[inc.find('github(all)') + 12:len(inc) - 1].replace(' ', '+')
                     irc.send('PRIVMSG %s :%s: --> https://github.com/search?q=%s <--\r' % (chan, user, insert))
 
-                elif re.match(r'^github\(\w+\)\s.+\r$', inc):
-                    try:
-                        lang = inc[inc.find('(') + 1:inc.find(')')]
-                        insert = inc.split(' ')[1].replace(' ', '+')
-                        print lang
-                        print insert
-
-                    except Exception, errout:
-                        print errout
-                        continue
-
-                    curl = os.popen('curl -H \"Authentication: token TOKEN\" -H \"Accept: application/vnd.github.mercy-preview+json\" https://api.github.com/search/repositories\?q\=%s\+language:%s' % (insert, lang)).read()
-                    try:
-                        name = re.findall(r'\"full_name\":.+', curl)[0].split(': ')[1]
-                        connection = re.findall(r'\"html_url\":.+', curl)[1].split(': ')[1]
-
-                    except IndexError, errout:
-                        irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
-                        print errout
-                        continue
-
-                    name_ = name[name.find('\"') + 1:len(name) - 2]
-                    connection_ = connection[connection.find('\"') + 1:len(connection) - 2]
-                    irc.send('PRIVMSG %s :%s: Top: [ %s ] - %s\r' % (chan, user, name_, connection_))
-
                 elif re.match(r'^github\s.+\r$', inc):
                     insert = inc[inc.find('github') + 7:len(inc) - 1].replace(' ', '+')
                     curl = os.popen('curl -H \"Authentication: token TOKEN\" -H \"Accept: application/vnd.github.mercy-preview+json\" https://api.github.com/search/repositories\?q\=%s' % insert).read()
