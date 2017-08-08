@@ -116,11 +116,14 @@ def main():
 
                 elif re.match(r'^github\(user\)\s.+\r$', inc):
                     insert = inc[inc.find('github(user)') + 13:len(inc) - 1].replace(' ', '+')
-                    print insert
-                    curl = os.popen('curl -H \'Accept: application/vnd.github.v3.text-match+json\' https://api.github.com/search/users\?q\=%s' % insert).read()
+                    headers = {
+                        'Accept': 'application/vnd.github.v3.text-match+json'
+                    }
+                    req = requests.get('https://api.github.com/search/users?q=%s' % insert, headers=headers)
+                    req_ = req.json()
                     try:
-                        name = re.findall(r'\"login\":.+', curl)[0].split(': ')[1]
-                        connection = re.findall(r'\"html_url\":.+', curl)[0].split(': ')[1]
+                        name = req_['items'][0]['login']
+                        connection = req_['items'][0]['html_url']
 
                     except IndexError, errout:
                         irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
@@ -133,19 +136,22 @@ def main():
 
                 elif re.match(r'^github\s.+\r$', inc):
                     insert = inc[inc.find('github') + 7:len(inc) - 1].replace(' ', '+')
-                    curl = os.popen('curl -H \"Authentication: token TOKEN\" -H \"Accept: application/vnd.github.mercy-preview+json\" https://api.github.com/search/repositories\?q\=%s' % insert).read()
+                    headers = {
+                        'Authentication': 'token TOKEN',
+                        'Accept': 'application/vnd.github.mercy-preview+json'
+                    }
+                    req = requests.get('https://api.github.com/search/repositories?q=%s' % insert, headers=headers)
+                    req_ = req.json()
                     try:
-                        name = re.findall(r'\"full_name\":.+', curl)[0].split(': ')[1]
-                        connection = re.findall(r'\"html_url\":.+', curl)[1].split(': ')[1]
+                        name = req_['items'][0]['full_name']
+                        connection = req_['items'][0]['html_url']
 
                     except IndexError, errout:
                         irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
                         print errout
                         continue
 
-                    name_ = name[name.find('\"') + 1:len(name) - 2]
-                    connection_ = connection[connection.find('\"') + 1:len(connection) - 2]
-                    irc.send('PRIVMSG %s :%s: Top: [ %s ] - %s\r' % (chan, user, name_, connection_))
+                    irc.send('PRIVMSG %s :%s: Top: [ %s ] - %s\r' % (chan, user, name, connection))
 
                 elif re.match(r'^tell\s#.+\s.+\r$', inc):
                     regex_split = re.split('\s', inc)
