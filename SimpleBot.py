@@ -130,9 +130,7 @@ def main():
                         print errout
                         continue
 
-                    name_ = name[name.find('\"') + 1:len(name) - 2]
-                    connection_ = connection[connection.find('\"') + 1:len(connection) - 2]
-                    irc.send('PRIVMSG %s :%s: Top: [ %s ] - %s\r' % (chan, user, name_, connection_))
+                    irc.send('PRIVMSG %s :%s: Top: [ %s ] - %s\r' % (chan, user, name, connection))
 
                 elif re.match(r'^github\s.+\r$', inc):
                     insert = inc[inc.find('github') + 7:len(inc) - 1].replace(' ', '+')
