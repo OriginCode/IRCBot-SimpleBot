@@ -121,7 +121,7 @@ def main():
                         'Authentication': 'token TOKEN',
                         'Accept': 'application/vnd.github.mercy-preview+json'
                     }
-                    req = requests.get('https://api.github.com/search/repositories?q=%s+language:%s&sort=updated' % (insert, lang), headers=headers)
+                    req = requests.get('https://api.github.com/search/repositories?q=%s+language:%s' % (insert, lang), headers=headers)
                     req_ = req.json()
                     try:
                         name = req_['items'][0]['full_name']
@@ -160,7 +160,7 @@ def main():
                         'Authentication': 'token TOKEN',
                         'Accept': 'application/vnd.github.mercy-preview+json'
                     }
-                    req = requests.get('https://api.github.com/search/repositories?q=%s&sort=updated' % insert, headers=headers)
+                    req = requests.get('https://api.github.com/search/repositories?q=%s' % insert, headers=headers)
                     req_ = req.json()
                     try:
                         name = req_['items'][0]['full_name']
