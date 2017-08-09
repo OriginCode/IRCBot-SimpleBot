@@ -121,18 +121,20 @@ def main():
                         'Authentication': 'token TOKEN',
                         'Accept': 'application/vnd.github.mercy-preview+json'
                     }
-                    req = requests.get('https://api.github.com/search/repositories?q=%s+language:%s' % (insert, lang), headers=headers)
+                    req = requests.get('https://api.github.com/search/repositories?q=%s+language:%s&sort=updated' % (insert, lang), headers=headers)
                     req_ = req.json()
                     try:
                         name = req_['items'][0]['full_name']
                         connection = req_['items'][0]['html_url']
+                        star = req_['items'][0]['stargazers_count']
+                        fork = req_['items'][0]['forks_count']
 
                     except IndexError, errout:
                         irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
                         print errout
                         continue
 
-                    irc.send('PRIVMSG %s :%s: Top: [ %s ] - %s\r' % (chan, user, name, connection))
+                    irc.send('PRIVMSG %s :%s: Top: [ %s ] - %s - Stars: %s Forks: %s\r' % (chan, user, name, connection, star, fork))
 
                 elif re.match(r'^github\(user\)\s.+\r$', inc):
                     insert = inc[inc.find('github(user)') + 13:len(inc) - 1].replace(' ', '+')
@@ -158,18 +160,20 @@ def main():
                         'Authentication': 'token TOKEN',
                         'Accept': 'application/vnd.github.mercy-preview+json'
                     }
-                    req = requests.get('https://api.github.com/search/repositories?q=%s' % insert, headers=headers)
+                    req = requests.get('https://api.github.com/search/repositories?q=%s&sort=updated' % insert, headers=headers)
                     req_ = req.json()
                     try:
                         name = req_['items'][0]['full_name']
                         connection = req_['items'][0]['html_url']
+                        star = req_['items'][0]['stargazers_count']
+                        fork = req_['items'][0]['forks_count']
 
                     except IndexError, errout:
                         irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
                         print errout
                         continue
 
-                    irc.send('PRIVMSG %s :%s: Top: [ %s ] - %s\r' % (chan, user, name, connection))
+                    irc.send('PRIVMSG %s :%s: Top: [ %s ] - %s - Stars: %s Forks: %s\r' % (chan, user, name, connection, star, fork))
 
                 elif re.match(r'^tell\s#.+\s.+\r$', inc):
                     regex_split = re.split('\s', inc)
