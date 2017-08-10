@@ -25,7 +25,7 @@ irc.send('PASS %s\r' % base.PASSWD)
 irc.send('NICK %s\r' % base.NICK)
 irc.send('USER %s %s %s :SimpleBot\r' % (base.NICK, base.NICK, base.NICK))
 for i in range(len(base.CHAN)):
-    irc.send('JOIN ' + base.CHAN[i] + '\r')
+    irc.send('JOIN #' + base.CHAN[i] + '\r')
 
 # Functions
 def main():
