@@ -24,7 +24,8 @@ irc = ssl.wrap_socket(socket)
 irc.send('PASS %s\r' % base.PASSWD)
 irc.send('NICK %s\r' % base.NICK)
 irc.send('USER %s %s %s :SimpleBot\r' % (base.NICK, base.NICK, base.NICK))
-irc.send('JOIN #%s,#%s,#%s\r' % (base.CHAN[0], base.CHAN[1], base.CHAN[2]))
+for i in range(base.CHAN):
+    irc.send('JOIN ' + base.CHAN[i] + '\r')
 
 # Functions
 def main():
@@ -59,9 +60,10 @@ def main():
                     irc.send('PRIVMSG %s :[calc ...]Calculator.\r' % user)
                     irc.send('PRIVMSG %s :[tell #channel ...]Tell something to the other channel. Do not type other commands until the bot replied sent successfully.\r' % user)
                     irc.send('PRIVMSG %s :[wiki ...]Search in Wikipedia.\r' % user)
+                    irc.send('PRIVMSG %s :[github ...]Search repositories/users in GitHub. Usage: github .../github(user) .../github(LANGUAGE) ...\r' % user)
 
                 elif re.match(r'^version\r$', inc):
-                    irc.send('PRIVMSG %s :%s: 3.2\r' % (chan, user))
+                    irc.send('PRIVMSG %s :%s: 3.3.0\r' % (chan, user))
 
                 elif re.match(r'^fortune\r$', inc):
                     output = os.popen('fortune').read().split('\n')
@@ -121,13 +123,14 @@ def main():
                         'Authentication': 'token TOKEN',
                         'Accept': 'application/vnd.github.mercy-preview+json'
                     }
-                    req = requests.get('https://api.github.com/search/repositories?q=%s+language:%s&sort=updated' % (insert, lang), headers=headers)
+                    req = requests.get('https://api.github.com/search/repositories?q=%s+language:%s' % (insert, lang), headers=headers)
                     req_ = req.json()
                     try:
                         name = req_['items'][0]['full_name']
                         connection = req_['items'][0]['html_url']
                         star = req_['items'][0]['stargazers_count']
                         fork = req_['items'][0]['forks_count']
+                        description = req_['items'][0]['description']
 
                     except IndexError, errout:
                         irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
@@ -135,6 +138,7 @@ def main():
                         continue
 
                     irc.send('PRIVMSG %s :%s: Top: [ %s ] - %s - Stars: %s Forks: %s\r' % (chan, user, name, connection, star, fork))
+                    irc.send('PRIVMSG %s :Description: %s\r' % (chan, description))
 
                 elif re.match(r'^github\(user\)\s.+\r$', inc):
                     insert = inc[inc.find('github(user)') + 13:len(inc) - 1].replace(' ', '+')
@@ -160,13 +164,14 @@ def main():
                         'Authentication': 'token TOKEN',
                         'Accept': 'application/vnd.github.mercy-preview+json'
                     }
-                    req = requests.get('https://api.github.com/search/repositories?q=%s&sort=updated' % insert, headers=headers)
+                    req = requests.get('https://api.github.com/search/repositories?q=%s' % insert, headers=headers)
                     req_ = req.json()
                     try:
                         name = req_['items'][0]['full_name']
                         connection = req_['items'][0]['html_url']
                         star = req_['items'][0]['stargazers_count']
                         fork = req_['items'][0]['forks_count']
+                        description = req_['items'][0]['description']
 
                     except IndexError, errout:
                         irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
@@ -174,6 +179,7 @@ def main():
                         continue
 
                     irc.send('PRIVMSG %s :%s: Top: [ %s ] - %s - Stars: %s Forks: %s\r' % (chan, user, name, connection, star, fork))
+                    irc.send('PRIVMSG %s :Description: %s\r' % (chan, description))
 
                 elif re.match(r'^tell\s#.+\s.+\r$', inc):
                     regex_split = re.split('\s', inc)
