@@ -82,7 +82,7 @@ def main():
 
                 elif re.match(r'^time\stz:[+-]\d{1,3}\r$', inc):
                     if -12 <= int(inc[inc.find('tz:') + 3:len(inc) - 1]) <= 14:
-                        irc.send('PRIVMSG %s :%s: Time: %s (CST/GMT%s)\r' % (chan, user, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time() - 8 * 3600 + int('%s' % inc[inc.find('tz:') + 3:len(inc) - 1]) * 3600)), int(inc[inc.find('tz:') + 3:len(inc) - 1])))
+                        irc.send('PRIVMSG %s :%s: Time: %s (CST/GMT%s)\r' % (chan, user, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time() - 8 * 3600 + int('%s' % inc[inc.find('tz:') + 3:len(inc) - 1]) * 3600)), inc[inc.find('tz:') + 3:len(inc) - 1]))
 
                     else:
                         irc.send('PRIVMSG %s :%s: Argument must be lower than 14 and higher than -12\r' % (chan, user))
