@@ -128,6 +128,7 @@ def main():
                         connection = req_['items'][0]['html_url']
                         star = req_['items'][0]['stargazers_count']
                         fork = req_['items'][0]['forks_count']
+                        description = req_['items'][0]['description']
 
                     except IndexError, errout:
                         irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
@@ -135,6 +136,7 @@ def main():
                         continue
 
                     irc.send('PRIVMSG %s :%s: Top: [ %s ] - %s - Stars: %s Forks: %s\r' % (chan, user, name, connection, star, fork))
+                    irc.send('PRIVMSG %s :Description: %s\r' % (chan, description))
 
                 elif re.match(r'^github\(user\)\s.+\r$', inc):
                     insert = inc[inc.find('github(user)') + 13:len(inc) - 1].replace(' ', '+')
@@ -167,6 +169,7 @@ def main():
                         connection = req_['items'][0]['html_url']
                         star = req_['items'][0]['stargazers_count']
                         fork = req_['items'][0]['forks_count']
+                        description = req_['items'][0]['description']
 
                     except IndexError, errout:
                         irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
@@ -174,6 +177,7 @@ def main():
                         continue
 
                     irc.send('PRIVMSG %s :%s: Top: [ %s ] - %s - Stars: %s Forks: %s\r' % (chan, user, name, connection, star, fork))
+                    irc.send('PRIVMSG %s :Description: %s\r' % (chan, description))
 
                 elif re.match(r'^tell\s#.+\s.+\r$', inc):
                     regex_split = re.split('\s', inc)
