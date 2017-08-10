@@ -60,9 +60,10 @@ def main():
                     irc.send('PRIVMSG %s :[calc ...]Calculator.\r' % user)
                     irc.send('PRIVMSG %s :[tell #channel ...]Tell something to the other channel. Do not type other commands until the bot replied sent successfully.\r' % user)
                     irc.send('PRIVMSG %s :[wiki ...]Search in Wikipedia.\r' % user)
+                    irc.send('PRIVMSG %s :[github ...]Search repositories/users in GitHub. Usage: github .../github(user) .../github(LANGUAGE) ...\r' % user)
 
                 elif re.match(r'^version\r$', inc):
-                    irc.send('PRIVMSG %s :%s: 3.2\r' % (chan, user))
+                    irc.send('PRIVMSG %s :%s: 3.3.0\r' % (chan, user))
 
                 elif re.match(r'^fortune\r$', inc):
                     output = os.popen('fortune').read().split('\n')
