@@ -24,7 +24,8 @@ irc = ssl.wrap_socket(socket)
 irc.send('PASS %s\r' % base.PASSWD)
 irc.send('NICK %s\r' % base.NICK)
 irc.send('USER %s %s %s :SimpleBot\r' % (base.NICK, base.NICK, base.NICK))
-irc.send('JOIN #%s,#%s,#%s\r' % (base.CHAN[0], base.CHAN[1], base.CHAN[2]))
+for i in range(base.CHAN):
+    irc.send('JOIN ' + base.CHAN[i] + '\r')
 
 # Functions
 def main():
