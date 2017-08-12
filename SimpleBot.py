@@ -46,7 +46,7 @@ def main():
         if re.match(r'#\w', chan):
             if data.find('::') != -1:
                 try:
-                    inc = data.split(' ')[3]
+                    inc = data.split(' :')[1]
 
                 except Exception, errout:
                     print errout
