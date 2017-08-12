@@ -116,6 +116,24 @@ def main():
                     insert = inc[inc.find('github(all)') + 12:len(inc) - 1].replace(' ', '+')
                     irc.send('PRIVMSG %s :%s: --> https://github.com/search?q=%s <--\r' % (chan, user, insert))
 
+                elif re.match(r'^github\(user\)\s.+\r$', inc):
+                    insert = inc[inc.find('github(user)') + 13:len(inc) - 1].replace(' ', '+')
+                    headers = {
+                        'Accept': 'application/vnd.github.v3.text-match+json'
+                    }
+                    req = requests.get('https://api.github.com/search/users?q=%s' % insert, headers=headers)
+                    req_ = req.json()
+                    try:
+                        name = req_['items'][0]['login']
+                        connection = req_['items'][0]['html_url']
+
+                    except IndexError, errout:
+                        irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
+                        print errout
+                        continue
+
+                    irc.send('PRIVMSG %s :%s: Top: [ %s ] - %s\r' % (chan, user, name, connection))
+
                 elif re.match(r'^github\(\w+\)\s.+\r$', inc):
                     insert = inc.split(' ')[1]
                     lang = inc[inc.find('(') + 1:inc.find(')')]
@@ -139,24 +157,6 @@ def main():
 
                     irc.send('PRIVMSG %s :%s: Top: [ %s ] - %s - Stars: %s Forks: %s\r' % (chan, user, name, connection, star, fork))
                     irc.send('PRIVMSG %s :Description: %s\r' % (chan, description))
-
-                elif re.match(r'^github\(user\)\s.+\r$', inc):
-                    insert = inc[inc.find('github(user)') + 13:len(inc) - 1].replace(' ', '+')
-                    headers = {
-                        'Accept': 'application/vnd.github.v3.text-match+json'
-                    }
-                    req = requests.get('https://api.github.com/search/users?q=%s' % insert, headers=headers)
-                    req_ = req.json()
-                    try:
-                        name = req_['items'][0]['login']
-                        connection = req_['items'][0]['html_url']
-
-                    except IndexError, errout:
-                        irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
-                        print errout
-                        continue
-
-                    irc.send('PRIVMSG %s :%s: Top: [ %s ] - %s\r' % (chan, user, name, connection))
 
                 elif re.match(r'^github\s.+\r$', inc):
                     insert = inc[inc.find('github') + 7:len(inc) - 1].replace(' ', '+')
