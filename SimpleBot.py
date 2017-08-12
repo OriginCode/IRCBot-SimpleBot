@@ -51,6 +51,7 @@ def main():
                 except Exception, errout:
                     print errout
                     continue
+
                 if re.match(r'^test\r$', inc):
                     irc.send('PRIVMSG %s :Success!\r' % chan)
 
