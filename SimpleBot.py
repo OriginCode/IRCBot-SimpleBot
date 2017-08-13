@@ -1,5 +1,5 @@
 #!/usr/bin/env python2
-# coding=utf-8
+# -*- coding:utf8 -*-
 
 # Import area
 import socket
@@ -8,6 +8,10 @@ import time
 import os
 import re
 import requests
+
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 import module.calc_base as calc_base
 import module.base as base
@@ -198,7 +202,7 @@ def main():
                         print errout
                         continue
 
-                    irc.send('PRIVMSG %s :%s: [ %s - %s ] Weather: %s, Current Temperature: %d (Celsius), Wind Speed: %s Mps.\r' % (chan, user, country, city, weather, temp, wind_speed))
+                    irc.send('PRIVMSG %s :%s: [ %s - %s ] Weather: %s, Current Temperature: %d °C, Wind Speed: %s Mps.\r' % (chan, user, country, city, weather, temp, wind_speed))
 
                 elif re.match(r'^tell\s#.+\s.+\r$', inc):
                     regex_split = re.split('\s', inc)
