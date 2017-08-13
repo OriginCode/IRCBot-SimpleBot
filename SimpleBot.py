@@ -191,6 +191,7 @@ def main():
                     req = requests.get('http://api.openweathermap.org/data/2.5/forecast?q=%s&APPID=b1c8d567252dcea6f7b7bce3940e8126' % insert)
                     req_ = req.json()
                     try:
+                        date = req_['list'][0]['dt_txt']
                         country = req_['city']['country']
                         city = req_['city']['name']
                         weather = req_['list'][0]['weather'][0]['description']
@@ -202,7 +203,7 @@ def main():
                         print errout
                         continue
 
-                    irc.send('PRIVMSG %s :%s: [ %s - %s ] Weather: %s, Current Temperature: %d °C, Wind Speed: %s Mps.\r' % (chan, user, country, city, weather, temp, wind_speed))
+                    irc.send('PRIVMSG %s :%s: [ %s - %s ] Weather: %s, Current Temperature: %d °C, Wind Speed: %s Mps. (Catched Time: %s)\r' % (chan, user, country, city, weather, temp, wind_speed, date))
 
                 elif re.match(r'^tell\s#.+\s.+\r$', inc):
                     regex_split = re.split('\s', inc)
