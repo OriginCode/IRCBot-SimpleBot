@@ -191,13 +191,14 @@ def main():
                         weather = req_['list'][0]['weather'][0]['description']
                         temp_max = req_['list'][0]['main']['temp_max']
                         temp_min = req_['list'][0]['main']['temp_min']
+                        wind_speed = req_['list'][0]['wind']['speed']
 
                     except Exception, errout:
                         irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
                         print errout
                         continue
 
-                    irc.send('PRIVMSG %s :%s: [ %s - %s ] Weather: %s Max Temp: %s Min Temp: %s\r' % (chan, user, country, city, weather, temp_max, temp_min))
+                    irc.send('PRIVMSG %s :%s: [ %s - %s ] Weather: %s Max Temp: %s Min Temp: %s Wind Speed: %s\r' % (chan, user, country, city, weather, temp_max, temp_min, wind_speed))
 
                 elif re.match(r'^tell\s#.+\s.+\r$', inc):
                     regex_split = re.split('\s', inc)
