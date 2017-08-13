@@ -192,7 +192,7 @@ def main():
                         temp_max = req_['list'][0]['main']['temp_max']
                         temp_min = req_['list'][0]['main']['temp_min']
 
-                    except IndexError, errout:
+                    except Exception, errout:
                         irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
                         print errout
                         continue
