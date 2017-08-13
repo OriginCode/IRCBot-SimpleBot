@@ -189,8 +189,7 @@ def main():
                         country = req_['city']['country']
                         city = req_['city']['name']
                         weather = req_['list'][0]['weather'][0]['description']
-                        temp_max = req_['list'][0]['main']['temp_max']
-                        temp_min = req_['list'][0]['main']['temp_min']
+                        temp = int(req_['list'][0]['main']['temp']) - 273.15
                         wind_speed = req_['list'][0]['wind']['speed']
 
                     except Exception, errout:
@@ -198,7 +197,7 @@ def main():
                         print errout
                         continue
 
-                    irc.send('PRIVMSG %s :%s: [ %s - %s ] Weather: %s Max Temp: %s Min Temp: %s Wind Speed: %s\r' % (chan, user, country, city, weather, temp_max, temp_min, wind_speed))
+                    irc.send('PRIVMSG %s :%s: [ %s - %s ] Weather: %s Current Temperature: %d Wind Speed: %s\r' % (chan, user, country, city, weather, temp, wind_speed))
 
                 elif re.match(r'^tell\s#.+\s.+\r$', inc):
                     regex_split = re.split('\s', inc)
