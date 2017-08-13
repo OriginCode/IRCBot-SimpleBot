@@ -197,7 +197,7 @@ def main():
                         print errout
                         continue
 
-                    irc.send('PRIVMSG %s :%s: [ %s - %s ] Weather: %s Current Temperature: %d Wind Speed: %s\r' % (chan, user, country, city, weather, temp, wind_speed))
+                    irc.send('PRIVMSG %s :%s: [ %s - %s ] Weather: %s, Current Temperature: %d°C, Wind Speed: %s.\r' % (chan, user, country, city, weather, temp, wind_speed))
 
                 elif re.match(r'^tell\s#.+\s.+\r$', inc):
                     regex_split = re.split('\s', inc)
