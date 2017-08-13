@@ -1,5 +1,5 @@
 #!/usr/bin/env python2
-# -*- coding:utf-8 -*-
+# -*- coding:utf8 -*-
 
 # Import area
 import socket
@@ -8,6 +8,10 @@ import time
 import os
 import re
 import requests
+
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 import module.calc_base as calc_base
 import module.base as base
@@ -61,6 +65,7 @@ def main():
                     irc.send('PRIVMSG %s :[tell #channel ...]Tell something to the other channel. Do not type other commands until the bot replied sent successfully.\r' % user)
                     irc.send('PRIVMSG %s :[wiki ...]Search in Wikipedia.\r' % user)
                     irc.send('PRIVMSG %s :[github ...]Search repositories/users in GitHub. Usage: github .../github(user) .../github(LANGUAGE) ...\r' % user)
+                    irc.send('PRIVMSG %s :[weather ...]Weather forecast. Usage: weather <place>.\r' % user)
 
                 elif re.match(r'^version\r$', inc):
                     irc.send('PRIVMSG %s :%s: 3.3.0\r' % (chan, user))
@@ -189,8 +194,7 @@ def main():
                         country = req_['city']['country']
                         city = req_['city']['name']
                         weather = req_['list'][0]['weather'][0]['description']
-                        temp_max = req_['list'][0]['main']['temp_max']
-                        temp_min = req_['list'][0]['main']['temp_min']
+                        temp = int(req_['list'][0]['main']['temp']) - 273.15
                         wind_speed = req_['list'][0]['wind']['speed']
 
                     except Exception, errout:
@@ -198,23 +202,12 @@ def main():
                         print errout
                         continue
 
-                    irc.send('PRIVMSG %s :%s: [ %s - %s ] Weather: %s Max Temp: %s Min Temp: %s Wind Speed: %s\r' % (chan, user, country, city, weather, temp_max, temp_min, wind_speed))
+                    irc.send('PRIVMSG %s :%s: [ %s - %s ] Weather: %s, Current Temperature: %d °C, Wind Speed: %s Mps.\r' % (chan, user, country, city, weather, temp, wind_speed))
 
                 elif re.match(r'^tell\s#.+\s.+\r$', inc):
                     regex_split = re.split('\s', inc)
                     insert = inc[inc.find('#') + len(regex_split[1]) + 1:len(inc)]
                     irc.send('PRIVMSG %s :%s from %s told: %s\r' % (regex_split[1], user, chan, insert))
-                    data = irc.recv(4096)
-                    errcode = re.split('\s', data)[1]
-                    print data
-                    if errcode == '401':
-                        irc.send('PRIVMSG %s :%s: No such nick or channel.\r' % (chan, user))
-
-                    elif errcode == '404':
-                        irc.send('PRIVMSG %s :%s: Only available for these channel: #%s, #%s, #%s\r' % (chan, user, base.CHAN[0], base.CHAN[1], base.CHAN[2]))
-
-                    else:
-                        irc.send('PRIVMSG %s :%s: Successfully sent!\r' % (chan, user))
 
                 elif re.match(r'^sh\s.+\r$', inc):
                     data = irc.recv(4096)
