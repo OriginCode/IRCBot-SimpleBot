@@ -181,6 +181,24 @@ def main():
                     irc.send('PRIVMSG %s :%s: Top: [ %s ] - %s - Stars: %s Forks: %s\r' % (chan, user, name, connection, star, fork))
                     irc.send('PRIVMSG %s :Description: %s\r' % (chan, description))
 
+                elif re.match(r'^weather\s\w+\r$', inc):
+                    insert = inc[inc.find('weather') + 8:len(inc) - 1]
+                    req = requests.get('http://api.openweathermap.org/data/2.5/forecast?q=%s&APPID=b1c8d567252dcea6f7b7bce3940e8126' % insert)
+                    req_ = req.json()
+                    try:
+                        country = req_['city']['country']
+                        city = req_['city']['name']
+                        weather = req_['list'][0]['weather'][0]['description']
+                        temp_max = req_['list'][0]['main']['temp_max']
+                        temp_min = req_['list'][0]['main']['temp_min']
+
+                    except IndexError, errout:
+                        irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
+                        print errout
+                        continue
+
+                    irc.send('PRIVMSG %s :%s: [ %s - %s ] Weather: %s Max Temp: %s Min Temp: %s\r' % (chan, user, country, city, weather, temp_max, temp_min))
+
                 elif re.match(r'^tell\s#.+\s.+\r$', inc):
                     regex_split = re.split('\s', inc)
                     insert = inc[inc.find('#') + len(regex_split[1]) + 1:len(inc)]
