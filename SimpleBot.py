@@ -186,7 +186,7 @@ def main():
                     irc.send('PRIVMSG %s :%s: Top: [ %s ] - %s - Stars: %s Forks: %s\r' % (chan, user, name, connection, star, fork))
                     irc.send('PRIVMSG %s :Description: %s\r' % (chan, description))
 
-                elif re.match(r'^weather\s\w+\r$', inc):
+                elif re.match(r'^weather\s.+\r$', inc):
                     insert = inc[inc.find('weather') + 8:len(inc) - 1]
                     req = requests.get('http://api.openweathermap.org/data/2.5/weather?q=%s&APPID=b1c8d567252dcea6f7b7bce3940e8126' % insert)
                     req_ = req.json()
