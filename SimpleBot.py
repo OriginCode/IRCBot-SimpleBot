@@ -188,14 +188,14 @@ def main():
 
                 elif re.match(r'^weather\s\w+\r$', inc):
                     insert = inc[inc.find('weather') + 8:len(inc) - 1]
-                    req = requests.get('http://api.openweathermap.org/data/2.5/forecast?q=%s&APPID=b1c8d567252dcea6f7b7bce3940e8126' % insert)
+                    req = requests.get('http://api.openweathermap.org/data/2.5/weather?q=%s&APPID=b1c8d567252dcea6f7b7bce3940e8126' % insert)
                     req_ = req.json()
                     try:
-                        country = req_['city']['country']
-                        city = req_['city']['name']
-                        weather = req_['list'][0]['weather'][0]['description']
-                        temp = int(req_['list'][0]['main']['temp']) - 273.15
-                        wind_speed = req_['list'][0]['wind']['speed']
+                        country = req_['sys']['country']
+                        city = req_['name']
+                        weather = req_['weather'][0]['description']
+                        temp = int(req_['main']['temp']) - 273.15
+                        wind_speed = req_['wind']['speed']
 
                     except Exception, errout:
                         irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
