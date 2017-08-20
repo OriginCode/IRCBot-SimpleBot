@@ -193,7 +193,7 @@ def main():
                     try:
                         country = req_['sys']['country']
                         city = req_['name']
-                        weather = req_['weather'][0]['description']
+                        weather = req_['weather'][0]['main']
                         temp = int(req_['main']['temp']) - 273.15
                         wind_speed = req_['wind']['speed']
 
