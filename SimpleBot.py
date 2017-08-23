@@ -54,7 +54,7 @@ def main():
                     irc.send('PRIVMSG %s :Success!\r' % chan)
 
                 elif re.match(r'^help\r$', inc):
-                    if re.match('\w+\[t\].?', user):
+                    if re.match('\w+\[t\]', user):
                         irc.send('PRIVMSG %s :The command of %s starts with \":\".\r' % (chan, base.NICK))
                         irc.send('PRIVMSG %s :----------Help of %s----------\r' % (chan, base.NICK))
                         irc.send('PRIVMSG %s :[version]Show the version of %s.\r' % (chan, base.NICK))
