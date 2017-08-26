@@ -8,6 +8,7 @@ import time
 import os
 import re
 import requests
+import json
 
 import sys
 reload(sys)
@@ -141,17 +142,17 @@ def main():
                         'Accept': 'application/vnd.github.v3.text-match+json'
                     }
                     req = requests.get('https://api.github.com/search/users?q=%s' % insert, headers=headers)
-                    req_ = req.json()
+                    js = req.json()
                     try:
-                        name = req_['items'][0]['login']
-                        connection = req_['items'][0]['html_url']
+                        name = js['items'][0]['login']
+                        link = js['items'][0]['html_url']
 
                     except IndexError, errout:
                         irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
                         print errout
                         continue
 
-                    irc.send('PRIVMSG %s :%s: Top: [ %s ] - %s\r' % (chan, user, name, connection))
+                    irc.send('PRIVMSG %s :%s: Top: [ %s ] - %s\r' % (chan, user, name, link))
 
                 elif re.match(r'^github\(\w+\)\s.+\r$', inc):
                     insert = inc.split(' ')[1]
@@ -161,20 +162,20 @@ def main():
                         'Accept': 'application/vnd.github.mercy-preview+json'
                     }
                     req = requests.get('https://api.github.com/search/repositories?q=%s+language:%s' % (insert, lang), headers=headers)
-                    req_ = req.json()
+                    js = req.json()
                     try:
-                        name = req_['items'][0]['full_name']
-                        connection = req_['items'][0]['html_url']
-                        star = req_['items'][0]['stargazers_count']
-                        fork = req_['items'][0]['forks_count']
-                        description = req_['items'][0]['description']
+                        name = js['items'][0]['full_name']
+                        link = js['items'][0]['html_url']
+                        star = js['items'][0]['stargazers_count']
+                        fork = js['items'][0]['forks_count']
+                        description = js['items'][0]['description']
 
                     except IndexError, errout:
                         irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
                         print errout
                         continue
 
-                    irc.send('PRIVMSG %s :%s: Top: [ %s ] - %s - Stars: %s Forks: %s\r' % (chan, user, name, connection, star, fork))
+                    irc.send('PRIVMSG %s :%s: Top: [ %s ] - %s - Stars: %s Forks: %s\r' % (chan, user, name, link, star, fork))
                     irc.send('PRIVMSG %s :Description: %s\r' % (chan, description))
 
                 elif re.match(r'^github\s.+\r$', inc):
@@ -184,31 +185,49 @@ def main():
                         'Accept': 'application/vnd.github.mercy-preview+json'
                     }
                     req = requests.get('https://api.github.com/search/repositories?q=%s' % insert, headers=headers)
-                    req_ = req.json()
+                    js = req.json()
                     try:
-                        name = req_['items'][0]['full_name']
-                        connection = req_['items'][0]['html_url']
-                        star = req_['items'][0]['stargazers_count']
-                        fork = req_['items'][0]['forks_count']
-                        # description = req_['items'][0]['description']
+                        name = js['items'][0]['full_name']
+                        link = js['items'][0]['html_url']
+                        star = js['items'][0]['stargazers_count']
+                        fork = js['items'][0]['forks_count']
+                        # description = js['items'][0]['description']
 
                     except IndexError, errout:
                         irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
                         print errout
                         continue
 
-                    irc.send('PRIVMSG %s :%s: Top: [ %s ] - %s - Stars: %s Forks: %s\r' % (chan, user, name, connection, star, fork))
+                    irc.send('PRIVMSG %s :%s: Top: [ %s ] - %s - Stars: %s Forks: %s\r' % (chan, user, name, link, star, fork))
+
+                elif re.match(r'^pypi\s.+\r$', inc):
+                    insert = inc[inc.find('pypi') + 5:len(inc) - 1]
+                    req = requests.get('http://pypi.python.org/pypi/%s/json' % insert)
+                    try:
+                        js = req.json()
+
+                    except ValueError, errout:
+                        irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
+                        print errout
+                        continue
+
+                    link = js['info']['package_url']
+                    author = js['info']['author']
+                    version = js['info']['version']
+                    name = js['info']['name']
+
+                    irc.send('PRIVMSG %s :%s: Top: [ %s - %s ] - %s - Ver: %s\r' % (chan, user, author, name, link, version))
 
                 elif re.match(r'^weather\s.+\r$', inc):
                     insert = inc[inc.find('weather') + 8:len(inc) - 1]
                     req = requests.get('http://api.openweathermap.org/data/2.5/weather?q=%s&APPID=%s' % (insert, base.WEATHER_APPID))
-                    req_ = req.json()
+                    js = req.json()
                     try:
-                        country = req_['sys']['country']
-                        city = req_['name']
-                        weather = req_['weather'][0]['main']
-                        temp = int(req_['main']['temp']) - 273.15
-                        wind_speed = req_['wind']['speed']
+                        country = js['sys']['country']
+                        city = js['name']
+                        weather = js['weather'][0]['main']
+                        temp = int(js['main']['temp']) - 273.15
+                        wind_speed = js['wind']['speed']
 
                     except Exception, errout:
                         irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
@@ -216,6 +235,20 @@ def main():
                         continue
 
                     irc.send('PRIVMSG %s :%s: [ %s - %s ] Weather: %s, Current Temperature: %d °C, Wind Speed: %s Mps.\r' % (chan, user, country, city, weather, temp, wind_speed))
+
+                elif re.match(r'^city2id\s[A-Z].+\r$', inc):
+                    insert = inc[inc.find('city2id') + 8:len(inc) - 1]
+                    f = file('json/city-city_id.json')
+                    js = json.load(f)
+                    try:
+                        city_id = js[insert]
+
+                    except KeyError, errout:
+                        irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
+                        print errout
+                        continue
+
+                    irc.send('PRIVMSG %s :%s: %s - %d\r' % (chan, user, insert, city_id))
 
                 elif re.match(r'^tell\s#.+\s.+\r$', inc):
                     regex_split = re.split('\s', inc)
