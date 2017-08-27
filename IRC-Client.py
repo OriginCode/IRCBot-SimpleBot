@@ -260,7 +260,7 @@ def main():
                         irc.send('PRIVMSG %s :tq2 %s\r' % (chan, city_id))
 
                 elif re.match(r'^zhuyin\s.+$', inc):
-                    insert = inc[inc.find('pinyin') + 7:len(inc) - 1]
+                    insert = inc[inc.find('zhuyin') + 7:len(inc) - 1]
                     req = requests.get('https://www.moedict.tw/uni/%s' % insert)
                     js = req.json()
                     try:
