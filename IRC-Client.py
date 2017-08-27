@@ -236,8 +236,13 @@ def main():
 
                     irc.send('PRIVMSG %s :%s: [ %s - %s ] Weather: %s, Current Temperature: %d °C, Wind Speed: %s Mps.\r' % (chan, user, country, city, weather, temp, wind_speed))
 
-                elif re.match(r'^city2id\s[A-Z].+\r$', inc):
-                    insert = inc[inc.find('city2id') + 8:len(inc) - 1]
+                elif re.match(r'^city2id(\s|\(tq\)\s)[A-Z].+\r$', inc):
+                    if re.match(r'^city2id\s[A-Z].+\r$', inc):
+                        insert = inc[inc.find('city2id') + 8:len(inc) - 1]
+
+                    elif re.match(r'^city2id\(tq\)\s[A-Z].+\r$', inc):
+                        insert = inc[inc.find('city2id(tq)') + 12:len(inc) - 1]
+
                     f = file('json/city-city_id.json')
                     js = json.load(f)
                     try:
@@ -248,7 +253,26 @@ def main():
                         print errout
                         continue
 
-                    irc.send('PRIVMSG %s :%s: %s - %d\r' % (chan, user, insert, city_id))
+                    if re.match(r'^city2id\s[A-Z].+\r$', inc):
+                        irc.send('PRIVMSG %s :%s: %s - %d\r' % (chan, user, insert, city_id))
+
+                    elif re.match(r'^city2id\(tq\)\s[A-Z].+\r$', inc):
+                        irc.send('PRIVMSG %s :tq2 %s\r' % (chan, city_id))
+
+                elif re.match(r'^pinyin\s.+$', inc):
+                    insert = inc[inc.find('pinyin') + 7:len(inc) - 1]
+                    req = requests.get('https://www.moedict.tw/uni/%s' % insert)
+                    js = req.json()
+                    try:
+                        pinyin = js['heteronyms'][0]['bopomofo']
+                        zhuyin = js['heteronyms'][0]['bopomofo2']
+
+                    except Exception, errout:
+                        irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
+                        print errout
+                        continue
+
+                    irc.send('PRIVMSG %s :%s: %s - %s\r' % (chan, user, pinyin, zhuyin))
 
                 elif re.match(r'^tell\s#.+\s.+\r$', inc):
                     regex_split = re.split('\s', inc)
