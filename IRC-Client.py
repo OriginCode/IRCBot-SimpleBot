@@ -259,20 +259,20 @@ def main():
                     elif re.match(r'^city2id\(tq\)\s[A-Z].+\r$', inc):
                         irc.send('PRIVMSG %s :tq2 %s\r' % (chan, city_id))
 
-                elif re.match(r'^pinyin\s.+$', inc):
+                elif re.match(r'^zhuyin\s.+$', inc):
                     insert = inc[inc.find('pinyin') + 7:len(inc) - 1]
                     req = requests.get('https://www.moedict.tw/uni/%s' % insert)
                     js = req.json()
                     try:
-                        pinyin = js['heteronyms'][0]['bopomofo']
-                        zhuyin = js['heteronyms'][0]['bopomofo2']
+                        zhuyin = js['heteronyms'][0]['bopomofo']
+                        zhuyin1 = js['heteronyms'][0]['bopomofo2']
 
                     except Exception, errout:
                         irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
                         print errout
                         continue
 
-                    irc.send('PRIVMSG %s :%s: %s - %s\r' % (chan, user, pinyin, zhuyin))
+                    irc.send('PRIVMSG %s :%s: %s - %s\r' % (chan, user, zhuyin, zhuyin1))
 
                 elif re.match(r'^tell\s#.+\s.+\r$', inc):
                     regex_split = re.split('\s', inc)
