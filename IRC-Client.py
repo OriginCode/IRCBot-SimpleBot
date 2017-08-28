@@ -276,7 +276,7 @@ def main():
 
                 elif re.match(r'^chanlist\r$', inc):
                     for i in range(len(base.CHAN)):
-                        irc.send('PRIVMSG %s :%s: %s\r' % (chan, user, base.CHAN[i]))
+                        irc.send('PRIVMSG %s :#%s\r' % (user, base.CHAN[i]))
 
                 elif re.match(r'^tell\s#.+\s.+\r$', inc):
                     regex_split = re.split('\s', inc)
