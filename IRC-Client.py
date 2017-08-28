@@ -128,7 +128,7 @@ def main():
                     insert = inc[inc.find('wiki') + 5:len(inc) - 1].replace(' ', '_')
                     r = requests.get('https://en.wikipedia.org/wiki/%s' % insert)
                     if r.status_code == 404:
-                        irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
+                        irc.send('PRIVMSG %s :%s: tan90°\r' % (chan, user))
                     else:
                         irc.send('PRIVMSG %s :%s: --> https://en.wikipedia.org/wiki/%s <--\r' % (chan, user, insert))
 
@@ -148,7 +148,7 @@ def main():
                         link = js['items'][0]['html_url']
 
                     except IndexError, errout:
-                        irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
+                        irc.send('PRIVMSG %s :%s: tan90°\r' % (chan, user))
                         print errout
                         continue
 
@@ -171,7 +171,7 @@ def main():
                         description = js['items'][0]['description']
 
                     except IndexError, errout:
-                        irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
+                        irc.send('PRIVMSG %s :%s: tan90°\r' % (chan, user))
                         print errout
                         continue
 
@@ -194,7 +194,7 @@ def main():
                         # description = js['items'][0]['description']
 
                     except IndexError, errout:
-                        irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
+                        irc.send('PRIVMSG %s :%s: tan90°\r' % (chan, user))
                         print errout
                         continue
 
@@ -207,7 +207,7 @@ def main():
                         js = req.json()
 
                     except ValueError, errout:
-                        irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
+                        irc.send('PRIVMSG %s :%s: tan90°\r' % (chan, user))
                         print errout
                         continue
 
@@ -230,7 +230,7 @@ def main():
                         wind_speed = js['wind']['speed']
 
                     except Exception, errout:
-                        irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
+                        irc.send('PRIVMSG %s :%s: tan90°\r' % (chan, user))
                         print errout
                         continue
 
@@ -249,7 +249,7 @@ def main():
                         city_id = js[insert]
 
                     except KeyError, errout:
-                        irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
+                        irc.send('PRIVMSG %s :%s: tan90°\r' % (chan, user))
                         print errout
                         continue
 
@@ -268,7 +268,7 @@ def main():
                         zhuyin1 = js['heteronyms'][0]['bopomofo2']
 
                     except Exception, errout:
-                        irc.send('PRIVMSG %s :%s: tan 90°\r' % (chan, user))
+                        irc.send('PRIVMSG %s :%s: tan90°\r' % (chan, user))
                         print errout
                         continue
 
