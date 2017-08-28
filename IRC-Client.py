@@ -274,6 +274,10 @@ def main():
 
                     irc.send('PRIVMSG %s :%s: %s - %s\r' % (chan, user, zhuyin, zhuyin1))
 
+                elif re.match(r'^chanlist\r$', inc):
+                    for i in range(len(base.CHAN)):
+                        irc.send('PRIVMSG %s :%s: %s\r' % (chan, user, base.CHAN[i]))
+
                 elif re.match(r'^tell\s#.+\s.+\r$', inc):
                     regex_split = re.split('\s', inc)
                     insert = inc[inc.find('#') + len(regex_split[1]) + 1:len(inc)]
