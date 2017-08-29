@@ -236,6 +236,24 @@ def main():
 
                     irc.send('PRIVMSG %s :%s: [ %s - %s ] Weather: %s, Current Temperature: %d °C, Wind Speed: %s Mps.\r' % (chan, user, country, city, weather, temp, wind_speed))
 
+                elif re.match(r'^zhweather\s.+\r$', inc):
+                    insert = inc[inc.find('zhweather') + 10:len(inc) - 1]
+                    req = requests.get('https://api.seniverse.com/v3/weather/now.json?key=%s&location=%s&language=zh-Hans&unit=c' % (base.CHWEATHER_APPID, insert))
+                    js = req.json()
+                    try:
+                        last_update = js['results'][0]['last_update']
+                        country = js['results'][0]['location']['country']
+                        city = js['results'][0]['location']['name']
+                        weather = js['results'][0]['now']['text']
+                        temp = js['results'][0]['now']['temperature']
+
+                    except Exception, errout:
+                        irc.send('PRIVMSG %s :%s: tan90°\r' % (chan, user))
+                        print errout
+                        continue
+
+                    irc.send('PRIVMSG %s :%s: [ %s - %s ] 当前天气：%s， 当前温度：%s °C， 最后更新时间：%s\r' % (chan, user, country, city, weather, temp, last_update))
+
                 elif re.match(r'^city2id(\s|\(tq\)\s)[A-Z].+\r$', inc):
                     if re.match(r'^city2id\s[A-Z].+\r$', inc):
                         insert = inc[inc.find('city2id') + 8:len(inc) - 1]
@@ -276,6 +294,7 @@ def main():
 
                 elif re.match(r'^chanlist\r$', inc):
                     for i in range(len(base.CHAN)):
+                        irc.send('PRIVMSG %s :%s: See the private chat.\r' % (chan, user))
                         irc.send('PRIVMSG %s :#%s\r' % (user, base.CHAN[i]))
 
                 elif re.match(r'^tell\s#.+\s.+\r$', inc):
