@@ -293,8 +293,8 @@ def main():
                     irc.send('PRIVMSG %s :%s: %s - %s\r' % (chan, user, zhuyin, zhuyin1))
 
                 elif re.match(r'^chanlist\r$', inc):
+                    irc.send('PRIVMSG %s :%s: See the private chat.\r' % (chan, user))
                     for i in range(len(base.CHAN)):
-                        irc.send('PRIVMSG %s :%s: See the private chat.\r' % (chan, user))
                         irc.send('PRIVMSG %s :#%s\r' % (user, base.CHAN[i]))
 
                 elif re.match(r'^tell\s#.+\s.+\r$', inc):
