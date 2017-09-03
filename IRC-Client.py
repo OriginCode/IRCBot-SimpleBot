@@ -32,6 +32,15 @@ irc.send('USER %s %s %s :SimpleBot\r' % (base.NICK, base.NICK, base.NICK))
 for i in range(len(base.CHAN)):
     irc.send('JOIN #' + base.CHAN[i] + '\r')
 
+
+def irc_send(string, chan, obj):
+    irc.send('PRIVMSG %s :%s: %s' % (chan, obj, string))
+
+
+def irc_send_nou(string, chan):
+    irc.send('PRIVMSG %s :%s' % (chan, string))
+
+
 # Functions
 def main():
     while True:
@@ -83,58 +92,57 @@ def main():
                         irc.send('PRIVMSG %s :[weather ...]Weather forecast. Usage: weather <place>.\r' % user)
 
                 elif re.match(r'^version\r$', inc):
-                    irc.send('PRIVMSG %s :%s: 3.3.0\r' % (chan, user))
+                    irc_send('3.3.0\r', chan, user)
 
                 elif re.match(r'^fortune\r$', inc):
                     output = os.popen('fortune').read().split('\n')
                     for i in xrange(len(output) - 1):
-                        irc.send('PRIVMSG %s :%s\r' % (chan, output[i].replace('\t', '    ')))
+                        irc_send_nou('%s\r' % output[i].replace('\t', '    '), chan)
 
                 elif re.match(r'^echo\s.+\r$', inc):
-                    irc.send('PRIVMSG %s :%s\r' % (chan, inc[inc.find('echo') + 5:len(inc) - 1]))
+                    irc_send_nou('%s\r' % inc[inc.find('echo') + 5:len(inc) - 1], chan)
 
                 # Time
 
                 elif re.match(r'^time\r$', inc):
                     os.environ['TZ'] = 'Asia/Shanghai'
                     time.tzset()
-                    irc.send('PRIVMSG %s :%s: Time: %s (CST/GMT+8)\r' % (chan, user, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())))
+                    irc_send('Time: %s (CST/GMT+8)\r' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), chan, user)
 
                 elif re.match(r'^time\stz:[+-]\d{1,3}\r$', inc):
                     if -12 <= int(inc[inc.find('tz:') + 3:len(inc) - 1]) <= 14:
-                        irc.send('PRIVMSG %s :%s: Time: %s (CST/GMT%s)\r' % (chan, user, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time() - 8 * 3600 + int('%s' % inc[inc.find('tz:') + 3:len(inc) - 1]) * 3600)), inc[inc.find('tz:') + 3:len(inc) - 1]))
+                        irc_send('Time: %s (CST/GMT%s)\r' % (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time() - 8 * 3600 + int('%s' % inc[inc.find('tz:') + 3:len(inc) - 1]) * 3600)), inc[inc.find('tz:') + 3:len(inc) - 1]), chan, user)
 
                     else:
-                        irc.send('PRIVMSG %s :%s: Argument must be lower than 14 and higher than -12\r' % (chan, user))
+                        irc_send('Argument must be lower than 14 and higher than -12\r', chan, user)
 
                 elif re.match(r'^time\suts\r$', inc):
-                    irc.send('PRIVMSG %s :%s: Unix Timestamp: %s\r' % (chan, user, time.time()))
+                    irc_send('Unix Timestamp: %s\r' % time.time(), chan, user)
 
                 # Calculate
 
                 elif re.match(r'^calc\s.+\r$', inc):
-                    s = inc[inc.find('cal') + 5:len(inc) - 1]
-                    s = s.replace(' ', '')
+                    s = inc[inc.find('cal') + 5:len(inc) - 1].replace(' ', '')
                     try:
                         answer = calc_base.l1_analysis(s)
 
                     except Exception, errout:
-                        irc.send('PRIVMSG %s :%s: %s\r' % (chan, user, errout))
+                        irc_send('%s\r' % errout, chan, user)
                         continue
 
-                    irc.send('PRIVMSG %s :%s: %s\r' % (chan, user, answer))
+                    irc_send('%s\r' % answer, chan, user)
 
                 elif re.match(r'^wiki\s.+\r$', inc):
                     insert = inc[inc.find('wiki') + 5:len(inc) - 1].replace(' ', '_')
                     r = requests.get('https://en.wikipedia.org/wiki/%s' % insert)
                     if r.status_code == 404:
-                        irc.send('PRIVMSG %s :%s: tan90°\r' % (chan, user))
+                        irc_send('tan90°\r', chan, user)
                     else:
-                        irc.send('PRIVMSG %s :%s: --> https://en.wikipedia.org/wiki/%s <--\r' % (chan, user, insert))
+                        irc_send('--> https://en.wikipedia.org/wiki/%s <--\r' % insert, chan, user)
 
                 elif re.match(r'^github\(all\)\s.+\r$', inc):
                     insert = inc[inc.find('github(all)') + 12:len(inc) - 1].replace(' ', '+')
-                    irc.send('PRIVMSG %s :%s: --> https://github.com/search?q=%s <--\r' % (chan, user, insert))
+                    irc_send('--> https://github.com/search?q=%s <--\r' % insert, chan, user)
 
                 elif re.match(r'^github\(user\)\s.+\r$', inc):
                     insert = inc[inc.find('github(user)') + 13:len(inc) - 1].replace(' ', '+')
@@ -148,11 +156,11 @@ def main():
                         link = js['items'][0]['html_url']
 
                     except IndexError, errout:
-                        irc.send('PRIVMSG %s :%s: tan90°\r' % (chan, user))
+                        irc_send('tan90°\r', chan, user)
                         print errout
                         continue
 
-                    irc.send('PRIVMSG %s :%s: Top: [ %s ] - %s\r' % (chan, user, name, link))
+                    irc_send('Top: [ %s ] - %s\r' % (name, link), chan, user)
 
                 elif re.match(r'^github\(\w+\)\s.+\r$', inc):
                     insert = inc.split(' ')[1]
@@ -171,12 +179,12 @@ def main():
                         description = js['items'][0]['description']
 
                     except IndexError, errout:
-                        irc.send('PRIVMSG %s :%s: tan90°\r' % (chan, user))
+                        irc_send('tan90°\r', chan, user)
                         print errout
                         continue
 
-                    irc.send('PRIVMSG %s :%s: Top: [ %s ] - %s - Stars: %s Forks: %s\r' % (chan, user, name, link, star, fork))
-                    irc.send('PRIVMSG %s :Description: %s\r' % (chan, description))
+                    irc_send('Top: [ %s ] - %s - Stars: %s Forks: %s\r' % (name, link, star, fork), chan, user)
+                    irc_send_nou('Description: %s\r' % description, chan)
 
                 elif re.match(r'^github\s.+\r$', inc):
                     insert = inc[inc.find('github') + 7:len(inc) - 1].replace(' ', '+')
@@ -194,11 +202,11 @@ def main():
                         # description = js['items'][0]['description']
 
                     except IndexError, errout:
-                        irc.send('PRIVMSG %s :%s: tan90°\r' % (chan, user))
+                        irc_send('tan90°\r', chan, user)
                         print errout
                         continue
 
-                    irc.send('PRIVMSG %s :%s: Top: [ %s ] - %s - Stars: %s Forks: %s\r' % (chan, user, name, link, star, fork))
+                    irc_send('Top: [ %s ] - %s - Stars: %s Forks: %s\r' % (name, link, star, fork), chan, user)
 
                 elif re.match(r'^pypi\s.+\r$', inc):
                     insert = inc[inc.find('pypi') + 5:len(inc) - 1]
@@ -207,7 +215,7 @@ def main():
                         js = req.json()
 
                     except ValueError, errout:
-                        irc.send('PRIVMSG %s :%s: tan90°\r' % (chan, user))
+                        irc_send('tan90°\r', chan, user)
                         print errout
                         continue
 
@@ -216,7 +224,7 @@ def main():
                     version = js['info']['version']
                     name = js['info']['name']
 
-                    irc.send('PRIVMSG %s :%s: Top: [ %s - %s ] - %s - Ver: %s\r' % (chan, user, author, name, link, version))
+                    irc_send('Top: [ %s - %s ] - %s - Ver: %s\r' % (author, name, link, version), chan, user)
 
                 elif re.match(r'^weather\s.+\r$', inc):
                     insert = inc[inc.find('weather') + 8:len(inc) - 1]
@@ -230,11 +238,11 @@ def main():
                         wind_speed = js['wind']['speed']
 
                     except Exception, errout:
-                        irc.send('PRIVMSG %s :%s: tan90°\r' % (chan, user))
+                        irc_send('tan90°\r', chan, user)
                         print errout
                         continue
 
-                    irc.send('PRIVMSG %s :%s: [ %s - %s ] Weather: %s, Current Temperature: %d °C, Wind Speed: %s Mps.\r' % (chan, user, country, city, weather, temp, wind_speed))
+                    irc_send('[ %s - %s ] Weather: %s, Current Temperature: %d °C, Wind Speed: %s Mps.\r' % (country, city, weather, temp, wind_speed), chan, user)
 
                 elif re.match(r'^zhweather\s.+\r$', inc):
                     insert = inc[inc.find('zhweather') + 10:len(inc) - 1]
@@ -248,11 +256,11 @@ def main():
                         temp = js['results'][0]['now']['temperature']
 
                     except Exception, errout:
-                        irc.send('PRIVMSG %s :%s: tan90°\r' % (chan, user))
+                        irc_send('tan90°\r', chan, user)
                         print errout
                         continue
 
-                    irc.send('PRIVMSG %s :%s: [ %s - %s ] 当前天气：%s， 当前温度：%s °C， 最后更新时间：%s\r' % (chan, user, country, city, weather, temp, last_update))
+                    irc_send('[ %s - %s ] 当前天气：%s， 当前温度：%s °C， 最后更新时间：%s\r' % (country, city, weather, temp, last_update), chan, user)
 
                 elif re.match(r'^city2id(\s|\(tq\)\s)[A-Z].+\r$', inc):
                     if re.match(r'^city2id\s[A-Z].+\r$', inc):
@@ -267,15 +275,15 @@ def main():
                         city_id = js[insert]
 
                     except KeyError, errout:
-                        irc.send('PRIVMSG %s :%s: tan90°\r' % (chan, user))
+                        irc_send('tan90°\r', chan, user)
                         print errout
                         continue
 
                     if re.match(r'^city2id\s[A-Z].+\r$', inc):
-                        irc.send('PRIVMSG %s :%s: %s - %d\r' % (chan, user, insert, city_id))
+                        irc_send('%s - %d\r' % (insert, city_id), chan, user)
 
                     elif re.match(r'^city2id\(tq\)\s[A-Z].+\r$', inc):
-                        irc.send('PRIVMSG %s :tq2 %s\r' % (chan, city_id))
+                        irc_send_nou('tq2 %s\r' % city_id, chan)
 
                 elif re.match(r'^zhuyin\s.+$', inc):
                     insert = inc[inc.find('zhuyin') + 7:len(inc) - 1]
@@ -286,21 +294,21 @@ def main():
                         zhuyin1 = js['heteronyms'][0]['bopomofo2']
 
                     except Exception, errout:
-                        irc.send('PRIVMSG %s :%s: tan90°\r' % (chan, user))
+                        irc_send('tan90°\r', chan, user)
                         print errout
                         continue
 
-                    irc.send('PRIVMSG %s :%s: %s - %s\r' % (chan, user, zhuyin, zhuyin1))
+                    irc_send('%s - %s\r' % (zhuyin, zhuyin1), chan, user)
 
                 elif re.match(r'^chanlist\r$', inc):
-                    irc.send('PRIVMSG %s :%s: See the private chat.\r' % (chan, user))
+                    irc_send('See the private chat.\r', chan, user)
                     for i in range(len(base.CHAN)):
                         irc.send('PRIVMSG %s :#%s\r' % (user, base.CHAN[i]))
 
                 elif re.match(r'^tell\s#.+\s.+\r$', inc):
                     regex_split = re.split('\s', inc)
                     insert = inc[inc.find('#') + len(regex_split[1]) + 1:len(inc)]
-                    irc.send('PRIVMSG %s :%s from %s told: %s\r' % (regex_split[1], user, chan, insert))
+                    irc_send_nou('%s from %s told: %s\r' % (user, chan, insert), regex_split[1])
 
                 elif re.match(r'^sh\s.+\r$', inc):
                     data = irc.recv(4096)
@@ -309,7 +317,7 @@ def main():
                     if re.match('^ps\s%s\r$' % base.ADMIN_PASSWD, inc_):
                         output = os.popen(inc[inc.find('sh') + 3:len(inc) - 1]).read().split('\n')
                         for i in xrange(len(output) - 1):
-                            irc.send('PRIVMSG %s :%s\r' % (chan, output[i].replace('\t', '    ')))
+                            irc_send_nou('%s\r' % output[i].replace('\t', '    '), chan)
 
                 elif re.match(r'^exit\r$', inc):
                     data = irc.recv(4096)
