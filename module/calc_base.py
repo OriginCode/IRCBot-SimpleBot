@@ -52,3 +52,4 @@ def l1_analysis(string):
         from_str = l1_pattern.search(string).group()
         string = string.replace(from_str, normal_numerator(from_str[1:-1]))
         return l1_analysis(string)
+
