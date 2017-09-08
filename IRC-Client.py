@@ -63,6 +63,7 @@ def main():
                 if re.match(r'^test\r$', inc):
                     irc.send('PRIVMSG %s :Success!\r' % chan)
 
+<<<<<<< HEAD
                 elif re.match(r'^help\r$', inc):
                     if re.match('\w+\[t\]', user):
                         irc.send('PRIVMSG %s :The command of %s starts with \":\".\r' % (chan, base.NICK))
@@ -91,6 +92,8 @@ def main():
                         irc.send('PRIVMSG %s :[github ...]Search repositories/users in GitHub. Usage: github .../github(user) .../github(LANGUAGE) ...\r' % user)
                         irc.send('PRIVMSG %s :[weather ...]Weather forecast. Usage: weather <place>.\r' % user)
 
+=======
+>>>>>>> dev
                 elif re.match(r'^version\r$', inc):
                     irc_send('3.3.0\r', chan, user)
 
