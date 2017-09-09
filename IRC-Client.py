@@ -63,37 +63,6 @@ def main():
                 if re.match(r'^test\r$', inc):
                     irc.send('PRIVMSG %s :Success!\r' % chan)
 
-<<<<<<< HEAD
-                elif re.match(r'^help\r$', inc):
-                    if re.match('\w+\[t\]', user):
-                        irc.send('PRIVMSG %s :The command of %s starts with \":\".\r' % (chan, base.NICK))
-                        irc.send('PRIVMSG %s :----------Help of %s----------\r' % (chan, base.NICK))
-                        irc.send('PRIVMSG %s :[version]Show the version of %s.\r' % (chan, base.NICK))
-                        irc.send('PRIVMSG %s :[time]Show the time. Format: :time (tz:[Number](Default: GMT+8))(uts(Show Unix Timestamp)).\r' % chan)
-                        irc.send('PRIVMSG %s :[fortune]Tell a fortune.\r' % chan)
-                        irc.send('PRIVMSG %s :[echo ...]Print the message you told to %s.\r' % (chan, base.NICK))
-                        irc.send('PRIVMSG %s :[calc ...]Calculator.\r' % chan)
-                        irc.send('PRIVMSG %s :[tell #channel ...]Tell something to the other channel. Do not type other commands until the bot replied sent successfully.\r' % chan)
-                        irc.send('PRIVMSG %s :[wiki ...]Search in Wikipedia.\r' % chan)
-                        irc.send('PRIVMSG %s :[github ...]Search repositories/users in GitHub. Usage: github .../github(user) .../github(LANGUAGE) ...\r' % chan)
-                        irc.send('PRIVMSG %s :[weather ...]Weather forecast. Usage: weather <place>.\r' % chan)
-
-                    else:
-                        irc.send('PRIVMSG %s :%s: See the private chat.\r' % (chan, user))
-                        irc.send('PRIVMSG %s :The command of %s starts with \":\".\r' % (user, base.NICK))
-                        irc.send('PRIVMSG %s :----------Help of %s----------\r' % (user, base.NICK))
-                        irc.send('PRIVMSG %s :[version]Show the version of %s.\r' % (user, base.NICK))
-                        irc.send('PRIVMSG %s :[time]Show the time. Format: :time (tz:[Number](Default: GMT+8))(uts(Show Unix Timestamp)).\r' % user)
-                        irc.send('PRIVMSG %s :[fortune]Tell a fortune.\r' % user)
-                        irc.send('PRIVMSG %s :[echo ...]Print the message you told to %s.\r' % (user, base.NICK))
-                        irc.send('PRIVMSG %s :[calc ...]Calculator.\r' % user)
-                        irc.send('PRIVMSG %s :[tell #channel ...]Tell something to the other channel. Do not type other commands until the bot replied sent successfully.\r' % user)
-                        irc.send('PRIVMSG %s :[wiki ...]Search in Wikipedia.\r' % user)
-                        irc.send('PRIVMSG %s :[github ...]Search repositories/users in GitHub. Usage: github .../github(user) .../github(LANGUAGE) ...\r' % user)
-                        irc.send('PRIVMSG %s :[weather ...]Weather forecast. Usage: weather <place>.\r' % user)
-
-=======
->>>>>>> dev
                 elif re.match(r'^version\r$', inc):
                     irc_send('3.3.0\r', chan, user)
 
