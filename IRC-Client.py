@@ -64,7 +64,7 @@ def main():
                     irc.send('PRIVMSG %s :Success!\r' % chan)
 
                 elif re.match(r'^version\r$', inc):
-                    irc_send('3.3.0\r', chan, user)
+                    irc_send('Latest Version(Rolling)\r', chan, user)
 
                 elif re.match(r'^fortune\r$', inc):
                     output = os.popen('fortune').read().split('\n')
