@@ -2,7 +2,7 @@
 >>> Master Branch <<<
 This branch is for the new release & new (stable) functions.
 
-Requiement:
+Requirement:
 1. Python 2.7.
 2. Linux Dist.
 3. Site-Packages:ssl, socket, re, requests, os, time.
