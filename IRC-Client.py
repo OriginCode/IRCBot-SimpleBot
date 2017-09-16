@@ -112,6 +112,38 @@ def main():
                     else:
                         irc_send('--> https://en.wikipedia.org/wiki/%s <--\r' % insert, chan, user)
 
+                elif re.match(r'^github\(commits\)\s.+/.+\r$', inc):
+                    githubUser = re.split('\)\s(.+)/', inc)[1]
+                    githubRepo = re.split('/(.+)\r$', inc)[1]
+                    req = requests.get('https://api.github.com/repos/%s/%s/commits' % (githubUser, githubRepo))
+                    js = req.json()
+                    try:
+                        commit1st = js[0]
+                        commit2nd = js[1]
+                        commit3rd = js[2]
+
+                    except Exception, errout:
+                        irc_send('tan90°\r', chan, user)
+                        print errout
+                        continue
+
+                    commitUser1st = commit1st['author']['login']
+                    commitUser2nd = commit2nd['author']['login']
+                    commitUser3rd = commit3rd['author']['login']
+
+                    sha1st = commit1st['sha'][:6]
+                    sha2nd = commit2nd['sha'][:6]
+                    sha3rd = commit3rd['sha'][:6]
+
+                    message1st = commit1st['commit']['message']
+                    message2nd = commit2nd['commit']['message']
+                    message3rd = commit3rd['commit']['message']
+
+                    irc_send_nou('[ %s/%s ] The Latest 3 Commits:\r' % (githubUser, githubRepo), chan)
+                    irc_send_nou('%s - %s: %s\r' % (commitUser1st, sha1st, message1st), chan)
+                    irc_send_nou('%s - %s: %s\r' % (commitUser2nd, sha2nd, message2nd), chan)
+                    irc_send_nou('%s - %s: %s\r' % (commitUser3rd, sha3rd, message3rd), chan)
+
                 elif re.match(r'^github\(all\)\s.+\r$', inc):
                     insert = inc[inc.find('github(all)') + 12:len(inc) - 1].replace(' ', '+')
                     irc_send('--> https://github.com/search?q=%s <--\r' % insert, chan, user)
