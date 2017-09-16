@@ -123,26 +123,26 @@ def main():
                         commit2nd = js[1]
                         commit3rd = js[2]
 
+                        commitUser1st = commit1st['author']['login']
+                        commitUser2nd = commit2nd['author']['login']
+                        commitUser3rd = commit3rd['author']['login']
+
+                        sha1st = commit1st['sha'][:6]
+                        sha2nd = commit2nd['sha'][:6]
+                        sha3rd = commit3rd['sha'][:6]
+
+                        message1st = commit1st['commit']['message']
+                        message2nd = commit2nd['commit']['message']
+                        message3rd = commit3rd['commit']['message']
+
+                        date1st = commit1st['commit']['committer']['date']
+                        date2nd = commit2nd['commit']['committer']['date']
+                        date3rd = commit3rd['commit']['committer']['date']
+
                     except Exception, errout:
                         irc_send('tan90°(Or this repository\'s commit(s) is(are) less than 3.)\r', chan, user)
                         print errout
                         continue
-
-                    commitUser1st = commit1st['author']['login']
-                    commitUser2nd = commit2nd['author']['login']
-                    commitUser3rd = commit3rd['author']['login']
-
-                    sha1st = commit1st['sha'][:6]
-                    sha2nd = commit2nd['sha'][:6]
-                    sha3rd = commit3rd['sha'][:6]
-
-                    message1st = commit1st['commit']['message']
-                    message2nd = commit2nd['commit']['message']
-                    message3rd = commit3rd['commit']['message']
-
-                    date1st = commit1st['commit']['committer']['date']
-                    date2nd = commit2nd['commit']['committer']['date']
-                    date3rd = commit3rd['commit']['committer']['date']
 
                     irc_send_nou('[ %s/%s ] The Latest 3 Commits:\r' % (githubUser, githubRepo), chan)
                     irc_send_nou('%s - %s - %s: %s\r' % (commitUser1st, sha1st, date1st, message1st), chan)
