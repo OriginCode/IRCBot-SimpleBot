@@ -123,7 +123,7 @@ def main():
                         commit3rd = js[2]
 
                     except Exception, errout:
-                        irc_send('tan90°\r', chan, user)
+                        irc_send('tan90°(Or this repository\'s commit(s) is(are) less than 3.\r', chan, user)
                         print errout
                         continue
 
