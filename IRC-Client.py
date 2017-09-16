@@ -60,6 +60,7 @@ def main():
         if re.match(r'#\w', chan):
             if data.find('::') != -1:
                 inc = data[data.find('::') + 2:len(data) - 1]
+                print inc
                 if re.match(r'^test\r$', inc):
                     irc.send('PRIVMSG %s :Success!\r' % chan)
 
@@ -112,26 +113,6 @@ def main():
                     else:
                         irc_send('--> https://en.wikipedia.org/wiki/%s <--\r' % insert, chan, user)
 
-                elif re.match(r'^github\(commits\)\[.+\]\s.+/.+\r$', inc):
-                    githubUser = re.split('\]\s(.+)/', inc)[1]
-                    githubRepo = re.split('/(.+)\r$', inc)[1]
-                    githubBrc = re.split('\[(.+)\]', inc)[1]
-                    req = requests.get('https://api.github.com/repos/%s/%s/commits/%s' % (githubUser, githubRepo, githubBrc))
-                    js = req.json()
-                    try:
-                        commitUser = js['author']['login']
-                        sha = js['sha'][:6]
-                        message = js['commit']['message']
-                        date = js['commit']['committer']['date']
-
-                    except Exception, errout:
-                        irc_send('tan90°\r', chan, user)
-                        print errout
-                        continue
-
-                    irc_send_nou('[ %s/%s ] The Latest Commit:\r' % (githubUser, githubRepo), chan)
-                    irc_send_nou('%s - %s - %s: %s\r' % (commitUser, sha, date, message), chan)
-
                 elif re.match(r'^github\(commits\)\s.+/.+\r$', inc):
                     githubUser = re.split('\)\s(.+)/', inc)[1]
                     githubRepo = re.split('/(.+)\r$', inc)[1]
@@ -167,6 +148,26 @@ def main():
                     irc_send_nou('%s - %s - %s: %s\r' % (commitUser1st, sha1st, date1st, message1st), chan)
                     irc_send_nou('%s - %s - %s: %s\r' % (commitUser2nd, sha2nd, date2nd, message2nd), chan)
                     irc_send_nou('%s - %s - %s: %s\r' % (commitUser3rd, sha3rd, date3rd, message3rd), chan)
+
+                elif re.match(r'^github\(commits\)\[.+\]\s.+/.+\r$', inc):
+                    githubUser = re.split('\]\s(.+)/', inc)[1]
+                    githubRepo = re.split('/(.+)\r$', inc)[1]
+                    githubBrc = re.split('\[(.+)\]', inc)[1]
+                    req = requests.get('https://api.github.com/repos/%s/%s/commits/%s' % (githubUser, githubRepo, githubBrc))
+                    js = req.json()
+                    try:
+                        commitUser = js['author']['login']
+                        sha = js['sha'][:6]
+                        message = js['commit']['message']
+                        date = js['commit']['committer']['date']
+
+                    except Exception, errout:
+                        irc_send('tan90°\r', chan, user)
+                        print errout
+                        continue
+
+                    irc_send_nou('[ %s/%s - %s ] The Latest Commit:\r' % (githubUser, githubRepo, githubBrc), chan)
+                    irc_send_nou('%s - %s - %s: %s\r' % (commitUser, sha, date, message), chan)
 
                 elif re.match(r'^github\(all\)\s.+\r$', inc):
                     insert = inc[inc.find('github(all)') + 12:len(inc) - 1].replace(' ', '+')
