@@ -139,10 +139,14 @@ def main():
                     message2nd = commit2nd['commit']['message']
                     message3rd = commit3rd['commit']['message']
 
+                    date1st = commit1st['commit']['committer']['date']
+                    date2nd = commit2nd['commit']['committer']['date']
+                    date3rd = commit3rd['commit']['committer']['date']
+
                     irc_send_nou('[ %s/%s ] The Latest 3 Commits:\r' % (githubUser, githubRepo), chan)
-                    irc_send_nou('%s - %s: %s\r' % (commitUser1st, sha1st, message1st), chan)
-                    irc_send_nou('%s - %s: %s\r' % (commitUser2nd, sha2nd, message2nd), chan)
-                    irc_send_nou('%s - %s: %s\r' % (commitUser3rd, sha3rd, message3rd), chan)
+                    irc_send_nou('%s - %s - %s: %s\r' % (commitUser1st, sha1st, date1st, message1st), chan)
+                    irc_send_nou('%s - %s - %s: %s\r' % (commitUser2nd, sha2nd, date2nd, message2nd), chan)
+                    irc_send_nou('%s - %s - %s: %s\r' % (commitUser3rd, sha3rd, date3rd, message3rd), chan)
 
                 elif re.match(r'^github\(all\)\s.+\r$', inc):
                     insert = inc[inc.find('github(all)') + 12:len(inc) - 1].replace(' ', '+')
