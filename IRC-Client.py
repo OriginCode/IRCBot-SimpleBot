@@ -14,7 +14,6 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 
-import module.calc_base as calc_base
 import module.base as base
 
 socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -91,19 +90,6 @@ def main():
 
                 elif re.match(r'^time\suts\r$', inc):
                     irc_send('Unix Timestamp: %s\r' % time.time(), chan, user)
-
-                # Calculate
-
-                elif re.match(r'^calc\s.+\r$', inc):
-                    s = inc[inc.find('cal') + 5:len(inc) - 1].replace(' ', '')
-                    try:
-                        answer = calc_base.l1_analysis(s)
-
-                    except Exception, errout:
-                        irc_send('%s\r' % errout, chan, user)
-                        continue
-
-                    irc_send('%s\r' % answer, chan, user)
 
                 elif re.match(r'^wiki\s.+\r$', inc):
                     insert = inc[inc.find('wiki') + 5:len(inc) - 1].replace(' ', '_')
