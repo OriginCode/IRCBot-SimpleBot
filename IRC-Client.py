@@ -170,7 +170,7 @@ def main():
                             irc_send_nou('%s - %s - %s: %s\r' % (commitUser1st, sha1st, date1st, message1st), chan)
 
                     except Exception, errout:
-                        irc_send('tan90°\r', chan, user)
+                        irc_send('Unknown Error!\r', chan, user)
                         print errout
                         continue
 
