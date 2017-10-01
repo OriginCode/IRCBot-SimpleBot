@@ -105,6 +105,14 @@ def main():
                     req = requests.get('https://api.github.com/repos/%s/%s/commits' % (githubUser, githubRepo))
                     js = req.json()
                     try:
+                        L = js[:3]
+
+                    except Exception, errout:
+                        irc_send('tan90°\r', chan, user)
+                        print errout
+                        continue
+
+                    if len(L) == 3:
                         commit1st = js[0]
                         commit2nd = js[1]
                         commit3rd = js[2]
@@ -125,15 +133,40 @@ def main():
                         date2nd = commit2nd['commit']['committer']['date']
                         date3rd = commit3rd['commit']['committer']['date']
 
-                    except Exception, errout:
-                        irc_send('tan90°(Or this repository\'s commit(s) is(are) less than 3.)\r', chan, user)
-                        print errout
-                        continue
+                        irc_send_nou('[ %s/%s ] The Latest 3 Commits:\r' % (githubUser, githubRepo), chan)
+                        irc_send_nou('%s - %s - %s: %s\r' % (commitUser1st, sha1st, date1st, message1st), chan)
+                        irc_send_nou('%s - %s - %s: %s\r' % (commitUser2nd, sha2nd, date2nd, message2nd), chan)
+                        irc_send_nou('%s - %s - %s: %s\r' % (commitUser3rd, sha3rd, date3rd, message3rd), chan)
 
-                    irc_send_nou('[ %s/%s ] The Latest 3 Commits:\r' % (githubUser, githubRepo), chan)
-                    irc_send_nou('%s - %s - %s: %s\r' % (commitUser1st, sha1st, date1st, message1st), chan)
-                    irc_send_nou('%s - %s - %s: %s\r' % (commitUser2nd, sha2nd, date2nd, message2nd), chan)
-                    irc_send_nou('%s - %s - %s: %s\r' % (commitUser3rd, sha3rd, date3rd, message3rd), chan)
+                    elif len(L) == 2:
+                        commit1st = js[0]
+                        commit2nd = js[1]
+
+                        commitUser1st = commit1st['author']['login']
+                        commitUser2nd = commit2nd['author']['login']
+
+                        sha1st = commit1st['sha'][:6]
+                        sha2nd = commit2nd['sha'][:6]
+
+                        message1st = commit1st['commit']['message']
+                        message2nd = commit2nd['commit']['message']
+
+                        date1st = commit1st['commit']['committer']['date']
+                        date2nd = commit2nd['commit']['committer']['date']
+
+                        irc_send_nou('[ %s/%s ] The Latest 2 Commits:\r' % (githubUser, githubRepo), chan)
+                        irc_send_nou('%s - %s - %s: %s\r' % (commitUser1st, sha1st, date1st, message1st), chan)
+                        irc_send_nou('%s - %s - %s: %s\r' % (commitUser2nd, sha2nd, date2nd, message2nd), chan)
+
+                    elif len(L) == 1:
+                        commit1st = js[0]
+                        commitUser1st = commit1st['author']['login']
+                        sha1st = commit1st['sha'][:6]
+                        message1st = commit1st['commit']['message']
+                        date1st = commit1st['commit']['committer']['date']
+
+                        irc_send_nou('[ %s/%s ] The Latest Commit:\r' % (githubUser, githubRepo), chan)
+                        irc_send_nou('%s - %s - %s: %s\r' % (commitUser1st, sha1st, date1st, message1st), chan)
 
                 elif re.match(r'^github\(commits\)\[.+\]\s.+/.+\r$', inc):
                     githubUser = re.split('\]\s(.+)/', inc)[1]
