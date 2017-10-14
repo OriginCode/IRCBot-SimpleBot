@@ -45,7 +45,6 @@ def main():
     while True:
         data = irc.recv(4096)
         print data
-        user = data[data.find(':') + 1:data.find('!')]
         try:
             chan = re.split(r'\s?', data)[2]
 
@@ -59,6 +58,7 @@ def main():
         if re.match(r'#\w', chan):
             if data.find('::') != -1:
                 inc = data[data.find('::') + 2:len(data) - 1]
+                user = data[data.find(':') + 1:data.find('!')]
                 print inc
                 if re.match(r'^test\r$', inc):
                     irc.send('PRIVMSG %s :Success!\r' % chan)
