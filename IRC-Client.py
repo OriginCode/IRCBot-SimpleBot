@@ -59,7 +59,6 @@ def main():
             if data.find('::') != -1:
                 inc = data[data.find('::') + 2:len(data) - 1]
                 user = data[data.find(':') + 1:data.find('!')]
-                print inc
                 if re.match(r'^test\r$', inc):
                     irc.send('PRIVMSG %s :Success!\r' % chan)
 
