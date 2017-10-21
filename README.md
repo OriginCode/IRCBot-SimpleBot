@@ -7,6 +7,7 @@ Required: Python 2.7.x, requests, Fortune, Git
 	$ cd ./IRCBot-SimpleBot
 
 You may need to edit the config file. Path: {BotFolder}/module/base.py
+
 Then:
 
 	$ python2 IRC-Client.py
