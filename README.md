@@ -9,7 +9,7 @@ Required: Python 2.7.x, requests, Fortune, Git
 * You may need to edit the config file. Path: {BotFolder}/module/base.py
 * Then:
 
-	$ python2 IRC-Client.py
+		$ python2 IRC-Client.py
 
 ## Commands
 Here: https://github.com/OriginCode/IRCBot-SimpleBot/wiki/Commands
