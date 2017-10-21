@@ -58,9 +58,12 @@ def main():
         if re.match(r'#\w', chan):
             if data.find('::') != -1:
                 inc = data[data.find('::') + 2:len(data) - 1]
-                user = data[data.find(':') + 1:data.find('!')]z
+                user = data[data.find(':') + 1:data.find('!')]
                 if re.match(r'^test\r$', inc):
                     irc.send('PRIVMSG %s :Success!\r' % chan)
+
+                elif re.match(r'^help\r$', inc):
+                    irc_send('==> https://github.com/OriginCode/IRCBot-SimpleBot/wiki/Commands <==\r', chan, user)
 
                 elif re.match(r'^version\r$', inc):
                     irc_send('Latest Version(Rolling)\r', chan, user)
