@@ -85,7 +85,7 @@ def main():
 
                 elif re.match(r'^time\stz:[+-]\d{1,3}\r$', inc):
                     if -12 <= int(inc[inc.find('tz:') + 3:len(inc) - 1]) <= 14:
-                        irc_send('Time: %s (CST/GMT%s)\r' % (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time() - 8 * 3600 + int('%s' % inc[inc.find('tz:') + 3:len(inc) - 1]) * 3600)), inc[inc.find('tz:') + 3:len(inc) - 1]), chan, user)
+                        irc_send('Time: %s (GMT%s)\r' % (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time() - 8 * 3600 + int('%s' % inc[inc.find('tz:') + 3:len(inc) - 1]) * 3600)), inc[inc.find('tz:') + 3:len(inc) - 1]), chan, user)
 
                     else:
                         irc_send('Argument must be lower than 14 and higher than -12\r', chan, user)
