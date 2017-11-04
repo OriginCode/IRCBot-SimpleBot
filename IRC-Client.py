@@ -45,9 +45,9 @@ def irc_send_nou(string, chan):
 
 # Functions
 def main():
+    print "Started receiving messages!"
     while True:
         data = irc.recv(4096)
-        print "Started receiving messages!"
         print data
         try:
             chan = re.split(r'\s?', data)[2]
