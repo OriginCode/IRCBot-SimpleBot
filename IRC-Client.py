@@ -28,8 +28,11 @@ irc = ssl.wrap_socket(socket)
 irc.send('PASS %s\r' % base.PASSWD)
 irc.send('NICK %s\r' % base.NICK)
 irc.send('USER %s %s %s :SimpleBot\r' % (base.NICK, base.NICK, base.NICK))
+print "Identified with %s on %s:%s" % (base.NICK, base.NETWORK, base.PORT)
+
 for i in range(len(base.CHAN)):
     irc.send('JOIN #' + base.CHAN[i] + '\r')
+    print "#" + base.CHAN[i] + " Joined!"
 
 
 def irc_send(string, chan, obj):
@@ -44,6 +47,7 @@ def irc_send_nou(string, chan):
 def main():
     while True:
         data = irc.recv(4096)
+        print "Started receiving messages!"
         print data
         try:
             chan = re.split(r'\s?', data)[2]
