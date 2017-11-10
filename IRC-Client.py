@@ -28,8 +28,11 @@ irc = ssl.wrap_socket(socket)
 irc.send('PASS %s\r' % base.PASSWD)
 irc.send('NICK %s\r' % base.NICK)
 irc.send('USER %s %s %s :SimpleBot\r' % (base.NICK, base.NICK, base.NICK))
+print "Identified with %s on %s:%s" % (base.NICK, base.NETWORK, base.PORT)
+
 for i in range(len(base.CHAN)):
     irc.send('JOIN #' + base.CHAN[i] + '\r')
+    print "#" + base.CHAN[i] + " Joined!"
 
 
 def irc_send(string, chan, obj):
@@ -42,10 +45,10 @@ def irc_send_nou(string, chan):
 
 # Functions
 def main():
+    print "Started receiving messages!"
     while True:
         data = irc.recv(4096)
         print data
-        user = data[data.find(':') + 1:data.find('!')]
         try:
             chan = re.split(r'\s?', data)[2]
 
@@ -59,9 +62,12 @@ def main():
         if re.match(r'#\w', chan):
             if data.find('::') != -1:
                 inc = data[data.find('::') + 2:len(data) - 1]
-                print inc
+                user = data[data.find(':') + 1:data.find('!')]
                 if re.match(r'^test\r$', inc):
                     irc.send('PRIVMSG %s :Success!\r' % chan)
+
+                elif re.match(r'^help\r$', inc):
+                    irc_send('==> https://github.com/OriginCode/IRCBot-SimpleBot/wiki/Commands <==\r', chan, user)
 
                 elif re.match(r'^version\r$', inc):
                     irc_send('Latest Version(Rolling)\r', chan, user)
@@ -83,7 +89,7 @@ def main():
 
                 elif re.match(r'^time\stz:[+-]\d{1,3}\r$', inc):
                     if -12 <= int(inc[inc.find('tz:') + 3:len(inc) - 1]) <= 14:
-                        irc_send('Time: %s (CST/GMT%s)\r' % (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time() - 8 * 3600 + int('%s' % inc[inc.find('tz:') + 3:len(inc) - 1]) * 3600)), inc[inc.find('tz:') + 3:len(inc) - 1]), chan, user)
+                        irc_send('Time: %s (GMT%s)\r' % (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time() - 8 * 3600 + int('%s' % inc[inc.find('tz:') + 3:len(inc) - 1]) * 3600)), inc[inc.find('tz:') + 3:len(inc) - 1]), chan, user)
 
                     else:
                         irc_send('Argument must be lower than 14 and higher than -12\r', chan, user)
